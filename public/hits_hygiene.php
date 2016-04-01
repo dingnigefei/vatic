@@ -15,7 +15,7 @@
 	</div>
 	<div class='main'>
 		<h2>Available Hits</h2>
-		<a href='http://navi.stanford.edu/wrapper/HospitalHygiene_wrapper.html'>HospitalHygiene</a><br>
+		<a href='http://navi.stanford.edu/wrapper/HospitalHygiene_wrapper.php'>HospitalHygiene</a><br>
 		</div>
 </body>
 </html>

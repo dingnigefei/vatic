@@ -6,19 +6,19 @@ from jinja2 import Environment, FileSystemLoader
 
 frameRootDir = '/scail/data/group/vision/u/syyeung/hospital/data'
 vidSets = [{'date': 17, 'dir': 'cvpr10-17-15afternoon', 'hits': [], 'ids': [], 'names': []}, {'date': 18, 'dir': 'cvpr10-18-15morning', 'hits': [], 'ids': [], 'names': []}, {'date': 19, 'dir': 'cvpr10-19-15morning', 'hits': [], 'ids': [], 'names': []}, {'date': 20, 'dir': 'cvpr10-20-15morning', 'hits': [], 'ids': [], 'names': []}]
-masterHitsFile = '/home/syyeung/vatic/vatic-cp/public/hits_hygiene.php'
-hitsDir = '/home/syyeung/vatic/vatic-cp/public/hits_hygiene';
-wrapperDir = '/home/syyeung/vatic/vatic-cp/public/wrapper'
+masterHitsFile = '/home/syyeung/vatic/vatic/public/hits_hygiene.php'
+hitsDir = '/home/syyeung/vatic/vatic/public/hits_hygiene';
+wrapperDir = '/home/syyeung/vatic/vatic/public/wrapper'
 
 labelName = "HospitalHygiene"
 vidFps = 10;
 vidLen = vidFps * 20;
-vidTypes = {'rgb', 'd', 'fs'}
-# vidTypes = {'rgb'}
+# vidTypes = {'rgb', 'd', 'fs'}
+vidTypes = {'rgb'}
 
 generateHits = True;
 
-oldHitsFile = '/home/syyeung/vatic/vatic-cp/old-hits.txt'
+oldHitsFile = '/home/syyeung/vatic/vatic/old-hits.txt'
 with open(oldHitsFile) as f:
   oldHits = f.read().strip().split('\n')
 
@@ -80,14 +80,15 @@ PATH = os.path.dirname(os.path.abspath(__file__))
 env = Environment(loader = FileSystemLoader(PATH))
 
 #write wrap label hits html
-vidWrapperTemplate = env.get_template('/public/wrapper/videoWrapperTemplate.html')
+vidWrapperTemplate = env.get_template('/public/wrapper/videoWrapperTemplate.php')
 context = {'vidSets': vidSets}
-wrapperFile = '%s/%s_wrapper.html' %(wrapperDir, labelName)
+wrapperFile = '%s/%s_wrapper.php' %(wrapperDir, labelName)
 with open(wrapperFile, 'w') as f:
   html = vidWrapperTemplate.render(context)
   f.write(html)
 
 #write a wrapper html for each video -- NOT USED!
+'''
 wrapperTemplate = env.get_template('/public/wrapper/wrapperTemplate.php')
 for video in vidSets:
   i = 0
@@ -102,6 +103,7 @@ for video in vidSets:
       html = wrapperTemplate.render(context)
       f.write(html)
     i += 1
+'''
 
 #regenerate master hits html
 masterHitsTemplate = env.get_template('/public/masterHitsTemplate_hygiene.php')

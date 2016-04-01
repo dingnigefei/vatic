@@ -38,25 +38,25 @@ function ui_setup(job, fps)
               "<div style='display: table-cell; vertical-align: middle; padding-right: 10px'><div id='instructionsbutton' class='button'>Instructions</div></div>" +
               "<div id='instructions' style='display: table-cell; vertical-align: middle; padding-right: 10px'>You can annotate any object, or even the frame itself.</div>" +
           "</div>" +
-          "<div id='videoframes'>" + 
+          "<div id='videoframes'>" +
               "<div class='videoframe' id='videoframe-fs'></div>" +
               "<div class='videoframe' id='videoframe-rgb'></div>" +
               "<div class='videoframe' id='videoframe-d'></div>" +
           "</div>" +
-          "<div id='bottombar'></div>" + 
+          "<div id='bottombar'></div>" +
           "<div id='advancedoptions'></div>" +
-      "</div>" + 
+      "</div>" +
       "<div id='divrightcol'>" +
-          "<div class='ctrpanel'>" + 
+          "<div class='ctrpanel'>" +
               "<div class='header'>" +
-                  "<div style='display: table-cell; vertical-align: middle'><p>Label frame</p></div>" + 
+                  "<div style='display: table-cell; vertical-align: middle'><p>Label frame</p></div>" +
                   "<div class='button' id='newfrmbtn'>New Frame Label</div>" +
               "</div>" +
               "<div id='ctr-frm'></div>" +
           "</div>" +
-          "<div class='ctrpanel'>" + 
+          "<div class='ctrpanel'>" +
               "<div class='header'>" +
-                  "<div style='display: table-cell; vertical-align: middle'><p>Label object</p></div>" + 
+                  "<div style='display: table-cell; vertical-align: middle'><p>Label object</p></div>" +
                   "<div class='button' id='newobjbtn'>New Object</div>" +
               "</div>" +
               "<div id='ctr-obj'></div>" +
@@ -94,7 +94,7 @@ function ui_setup(job, fps)
                 eventlog("options", "Hide advanced options");
                 $("#advancedoptions").hide();
             }
-            else {      
+            else {
 		eventlog("options", "Show advanced options");
                 //$(this).remove();
                 $("#advancedoptions").show();
@@ -123,7 +123,7 @@ function ui_setup(job, fps)
         "value='" + Math.round(fps) + ",1' id='speedcontrolnorm' checked='checked'>" +
     "<label for='speedcontrolnorm'>Normal</label>" +
     "<input type='radio' name='speedcontrol' " +
-        "value='" + Math.round(fps*2) + ",1' id='speedcontrolfast'>" +    
+        "value='" + Math.round(fps*2) + ",1' id='speedcontrolfast'>" +
     "<label for='speedcontrolfast'>Fast</label>" +
     "</div>");
 
@@ -141,7 +141,7 @@ function ui_setupbuttons(job, player, tracks)
 {
     $("#instructionsbutton").click(function() {
         player.pause();
-        ui_showinstructions(job); 
+        ui_showinstructions(job);
     }).button({
         icons: {
             primary: "ui-icon-newwin"
@@ -353,7 +353,7 @@ function ui_setupkeyboardshortcuts(job, player)
 
         var keycode = e.keyCode ? e.keyCode : e.which;
         eventlog("keyboard", "Key press: " + keycode);
-        
+
         if (keycode == 32 || keycode == 112 || keycode == 116 || keycode == 98)
         {
             $("#playbutton").click();
@@ -395,7 +395,7 @@ function ui_setupkeyboardshortcuts(job, player)
 
 function ui_canresize()
 {
-    return !$("#annotateoptionsresize").attr("checked"); 
+    return !$("#annotateoptionsresize").attr("checked");
 }
 
 function ui_areboxeshidden()
@@ -427,7 +427,7 @@ function ui_setupslider(player)
 
     slider.css({
         marginTop: "6px",
-        width: parseInt(slider.parent().css("width")) - 200 + "px", 
+        width: parseInt(slider.parent().css("width")) - 200 + "px",
         float: "right"
     });
 
@@ -536,7 +536,7 @@ function ui_submit(job, tracks)
 
     /*if (mturk_isassigned() && !mturk_isoffline())
     {
-        if (!window.confirm("Are you sure you are ready to submit? Please " + 
+        if (!window.confirm("Are you sure you are ready to submit? Please " +
                             "make sure that the entire video is labeled and " +
                             "your annotations are tight.\n\nTo submit, " +
                             "press OK. Otherwise, press Cancel to keep " +
@@ -577,7 +577,7 @@ function ui_submit(job, tracks)
             callback();
         });
     }
-    
+
     function savejob(callback)
     {
         server_post("savejob", [job.jobid],
@@ -640,7 +640,7 @@ function ui_submit_failedvalidation()
 
     h.append("<h1>Low Quality Work</h1>");
     h.append("<p>Sorry, but your work is low quality. We would normally <strong>reject this assignment</strong>, but we are giving you the opportunity to correct your mistakes since you are a new user.</p>");
-    
+
     h.append("<p>Please review the instructions, double check your annotations, and submit again. Remember:</p>");
 
     var str = "<ul>";
@@ -740,4 +740,3 @@ function ui_enable()
 
     console.log("UI disabled with count = " + uiDisabled);
 }
-

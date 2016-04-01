@@ -1,0 +1,8 @@
+*.pyc
+config.py
+tmp
+backup
+vatic.tar.gz
+.DS_Store
+*.swp
+public/frames

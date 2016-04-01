@@ -14,7 +14,7 @@
   while ($row = mysqli_fetch_array($result)) {
     if ($_POST["loginName"] == $row["user_name"] && $_POST["loginPassword"] == $row["user_password"]) {
       $_SESSION["username"] = $_POST["loginName"];
-      header("Location: http://navi.stanford.edu/hits.php");
+      header("Location: http://navi.stanford.edu/hits_hygiene.php");
       exit;
     }
   }

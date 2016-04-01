@@ -16,7 +16,7 @@
 	<div class='main'>
 		<h2>Available Hits</h2>
 		{% for labelName in labelNames -%}
-		<a href='http://navi.stanford.edu/wrapper/{{ labelName }}_wrapper.html'>{{ labelName }}</a><br>
+		<a href='http://navi.stanford.edu/wrapper/{{ labelName }}_wrapper.php'>{{ labelName }}</a><br>
 		{% endfor -%}
 	</div>
 </body>

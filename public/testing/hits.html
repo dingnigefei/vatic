@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hits</title>
+    <link rel="stylesheet" type="text/css" href="../css/stylesheet.css">
+    <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js'></script>
+    <script type="text/javascript">
+    function leave() {
+      var video_id = 0;
+      var label1 = JSON.stringify([1, 1, 0]);
+      var label2 = JSON.stringify([1, 0, 1]);
+      var labels = JSON.stringify([label1, label2]);
+      var names = JSON.stringify(['A', 'B']);
+      
+      var data = {
+        id: video_id,
+	label: labels,
+	name: names
+      };
+
+      $.ajax({
+        type: 'POST',
+	url: 'http://navi.stanford.edu/data_server/dataServer.php',
+	async: false,
+	data: {video_data: data},
+	success: function(response){alert(response);}
+      });
+    };
+
+    function load() {
+      var video_id = 0;
+
+      $.ajax({
+        type: 'POST',
+	url: 'data_server/dataServer.php',
+	async: false,
+	data: {video_id: video_id},
+	success: function(response) {
+	  var message = JSON.parse(response);
+	  var label_name = message['label_name'];
+	  var labels = message['labels'];
+	  alert(message['labels']);
+	}
+      });
+    };
+    </script>
+  </head>
+  <body>
+    <div class="main">
+      <table>
+        <tr>
+	  <td>
+	    <a id="hits_video1" href="http://navi.stanford.edu/access/video1.php?page_id='hits_video1'">
+	    Video1</a>
+	  </td>
+	  <td>
+	    <a id="hits_video2" href="http://navi.stanford.edu/access/video1.php?page_id='hits_video2'">
+	    Video2</a>
+	  </td>
+          <td>
+	    <button id="send_data" onclick='leave()'>Send data</button>
+	    <button id="load_data" onclick='load()'>Load data</button>
+	  </td>
+	</tr>
+      </table>
+    </div>
+  </body>
+</html>
+

@@ -1,4 +1,4 @@
-function TrackObjectUI(button, container, videoframe, job, player, tracks)
+function TrackObjectUI(button, container, videoframe, job, player, tracks, kbDisabled)
 {
     var me = this;
 
@@ -25,7 +25,7 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks)
             return;
         }
 
-        tracks.drawingnew(true);
+        //tracks.drawingnew(true);
 
         console.log("Starting new track object");
 
@@ -359,6 +359,16 @@ function TrackObject(job, player, container, color)
         this.track.label = labelid;
 
         this.headerdetails = $("<div style='float:right;'></div>").appendTo(this.handle);
+        //console.log(labelid, this.id, this.label, this.job.labels[this.label]);
+        //this.header = $("<input id='trackobjectheader" + this.id + "' value='Object " + (this.id + 1) + "' type='text'></input>").appendTo(this.handle).hide().slideDown();
+        $("#trackobjectheader" + this.id).focusin(function() {
+            kbDisabled[0] = true;
+            console.log("focus in");
+        });
+         $("#trackobjectheader" + this.id).focusout(function() {
+            kbDisabled[0] = false;
+            console.log("focus out");
+        });
         this.header = $("<p class='trackobjectheader'><strong>" + this.job.labels[this.label] + " " + (this.id + 1) + "</strong></p>").appendTo(this.handle).hide().slideDown();
         //this.opencloseicon = $('<div class="ui-icon ui-icon-triangle-1-e"></div>').prependTo(this.header);
         this.details = $("<div class='trackobjectdetails'></div>").appendTo(this.handle).hide();
@@ -477,9 +487,9 @@ function TrackObject(job, player, container, color)
         });
 
         //this.details.append("<br><input type='button' id='trackobject" + this.id + "label' value='Change Type'>");
-        this.headerdetails.append("<div style='float:right;'><div class='ui-icon ui-icon-trash' id='trackobject" + this.id + "delete' title='Delete this track'></div></div>");
-        this.headerdetails.append("<div style='float:right;'><div class='ui-icon ui-icon-unlocked' id='trackobject" + this.id + "lock' title='Lock/unlock to prevent modifications'></div></div>");
-        this.headerdetails.append("<div style='float:right;'><div class='ui-icon ui-icon-image' id='trackobject" + this.id + "tooltip' title='Show preview of track'></div></div>");
+        this.headerdetails.append("<div style='padding:2px;' class='icon'><div class='ui-icon ui-icon-trash' id='trackobject" + this.id + "delete' title='Delete this track'></div></div>");
+        this.headerdetails.append("<div style='padding:2px;' class='icon'><div class='ui-icon ui-icon-unlocked' id='trackobject" + this.id + "lock' title='Lock/unlock to prevent modifications'></div></div>");
+        this.headerdetails.append("<div style='padding:2px;' class='icon'><div class='ui-icon ui-icon-image' id='trackobject" + this.id + "tooltip' title='Show preview of track'></div></div>");
 
         $("#trackobject" + this.id + "delete").click(function() {
             if (window.confirm("Delete the " + me.job.labels[me.label] + " " + (me.id + 1) + " track? If the object just left the view screen, click the \"Outside of view frame\" check box instead."))

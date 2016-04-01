@@ -1,8 +1,12 @@
+<?php
+  include('access/access.php');
+?>
+
 <!DOCTYPE html5>
 <html>
 <head>
 
-<title>vatic</title>
+<title>vatic php</title>
 
 <link rel="stylesheet" type="text/css" href="turkic/stylesheet.css">
 <link rel="stylesheet" type="text/css" href="stylesheet.css">
@@ -14,17 +18,21 @@
 <script src="videoplayer.js?v=jul1"></script>
 <script src="preload.js?v=jul1"></script>
 <script src="objectui.js?v=jul1"></script>
+<script src="frameui.js?v=jul1"></script>
 <script src="ui.js?v=jul1"></script>
 <script src="instructions.js?v=jul1"></script>
 <script src="job.js?v=jul1"></script>
 <script src="tracks.js?v=jul1"></script>
 <script src="bootstrap.js?v=jul1"></script>
 
+<link href="slider/jquery-ui-range-slider.css" rel="stylesheet">
+<script src="slider/jquery-ui-range-slider.js"></script>
+
+
 </head>
 <body>
 
 <div id="container">
-
 </div>
 
 </body>

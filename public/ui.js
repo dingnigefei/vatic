@@ -1,21 +1,27 @@
-var ui_disabled = 0;
+var uiDisabled = 0;
+var kbDisabled = [false];
 
 function ui_build(job)
 {
-    var screen = ui_setup(job);
-    var videoframe = $("#videoframe");
-    var player = new VideoPlayer(videoframe, job);
+    console.log(job);
+    var fps = 10;
+    var screen = ui_setup(job, fps);
+    var videoframe_fs = $("#videoframe-fs");
+    var videoframe_rgb = $("#videoframe-rgb");
+    var videoframe_d = $("#videoframe-d");
+    var player = new VideoPlayer(videoframe_fs, videoframe_rgb, videoframe_d, job, 10);
     var tracks = new TrackCollection(player, job);
-    var objectui = new TrackObjectUI($("#newobjectbutton"), $("#objectcontainer"), videoframe, job, player, tracks);
+    var objectui = new TrackObjectUI($("#newobjbtn"), $("#objectcontainer"), videoframe_rgb, job, player, tracks, kbDisabled);
+    var frameui = new TrackFrameUI($("#newfrmbtn"), $("#ctr-frm"), player, kbDisabled);
 
     ui_setupbuttons(job, player, tracks);
     ui_setupslider(player);
-    ui_setupsubmit(job, tracks);
+    ui_setupsubmit(job, tracks, frameui);
     ui_setupclickskip(job, player, tracks, objectui);
     ui_setupkeyboardshortcuts(job, player);
     ui_loadprevious(job, objectui);
 
-    $("#newobjectbutton").click(function() {
+    $("#newobjbtn").click(function() {
         if (!mturk_submitallowed())
         {
             $("#turkic_acceptfirst").effect("pulsate");
@@ -23,50 +29,60 @@ function ui_build(job)
     });
 }
 
-function ui_setup(job)
+function ui_setup(job, fps)
 {
-    var screen = $("<div id='annotatescreen'></div>").appendTo(container);
+    var screen = $("<div id='annotatescreen' style='display: table'></div>").appendTo(container);
 
-    $("<table>" + 
-        "<tr>" +
-            "<td><div id='instructionsbutton' class='button'>Instructions</div><div id='instructions'>Annotate every object, even stationary and obstructed objects, for the entire video.</td>" +
-            "<td><div id='topbar'></div></td>" +
-        "</tr>" +
-        "<tr>" +
-              "<td><div id='videoframe'></div></td>" + 
-              "<td rowspan='2'><div id='sidebar'></div></td>" +
-          "</tr>" + 
-          "<tr>" +
-              "<td><div id='bottombar'></div></td>" + 
-          "</tr>" +
-          "<tr>" +
-              "<td><div id='advancedoptions'></div></td>" +
-              "<td><div id='submitbar'></div></td>" +
-          "</tr>" +
-      "</table>").appendTo(screen).css("width", "100%");
+    $("<div id='divleftcol'>" +
+          "<div id='instructions'>" +
+              "<div style='display: table-cell; vertical-align: middle; padding-right: 10px'><div id='instructionsbutton' class='button'>Instructions</div></div>" +
+              "<div id='instructions' style='display: table-cell; vertical-align: middle; padding-right: 10px'>You can annotate any object, or even the frame itself.</div>" +
+          "</div>" +
+          "<div id='videoframes'>" + 
+              "<div class='videoframe' id='videoframe-fs'></div>" +
+              "<div class='videoframe' id='videoframe-rgb'></div>" +
+              "<div class='videoframe' id='videoframe-d'></div>" +
+          "</div>" +
+          "<div id='bottombar'></div>" + 
+          "<div id='advancedoptions'></div>" +
+      "</div>" + 
+      "<div id='divrightcol'>" +
+          "<div class='ctrpanel'>" + 
+              "<div class='header'>" +
+                  "<div style='display: table-cell; vertical-align: middle'><p>Label frame</p></div>" + 
+                  "<div class='button' id='newfrmbtn'>New Frame Label</div>" +
+              "</div>" +
+              "<div id='ctr-frm'></div>" +
+          "</div>" +
+          "<div class='ctrpanel'>" + 
+              "<div class='header'>" +
+                  "<div style='display: table-cell; vertical-align: middle'><p>Label object</p></div>" + 
+                  "<div class='button' id='newobjbtn'>New Object</div>" +
+              "</div>" +
+              "<div id='ctr-obj'></div>" +
+          "</div>" +
+          "<div id='submitbar'></div>" +
+      "</div>").appendTo(screen);
 
+    var playerwidth = Math.max(320, job.width);
 
-    var playerwidth = Math.max(720, job.width);
-
-
-    $("#videoframe").css({"width": job.width + "px",
+    $(".videoframe").css({"width": job.width + "px",
                           "height": job.height + "px",
                           "margin": "0 auto"})
-                    .parent().css("width", playerwidth + "px");
-
-    $("#sidebar").css({"height": job.height + "px",
-                       "width": "205px"});
-
-    $("#annotatescreen").css("width", (playerwidth + 205) + "px");
+                    .parent().css("width", playerwidth*3 + "px");
 
     $("#bottombar").append("<div id='playerslider'></div>");
     $("#bottombar").append("<div class='button' id='rewindbutton'>Rewind</div> ");
     $("#bottombar").append("<div class='button' id='playbutton'>Play</div> ");
+    $("#bottombar").append("<div class='button' id='jumpbbutton'>Jump Backward</div> ");
+    $("#bottombar").append("<div class='button' id='jumpfbutton'>Jump Forward</div> ");
+    $("#bottombar").append("<div class='button' id='stepbbutton'>Step Backward</div> ");
+    $("#bottombar").append("<div class='button' id='stepfbutton'>Step Forward</div> ");
 
-    $("#topbar").append("<div id='newobjectcontainer'>" +
-        "<div class='button' id='newobjectbutton'>New Object</div></div>");
+    //$("#topbar").append("<div id='newobjectcontainer>" +
+	//"<div class='button' id='startannotation'>Start</div></div>");
 
-    $("<div id='objectcontainer'></div>").appendTo("#sidebar");
+    $("<div id='objectcontainer'></div>").appendTo("#ctr-obj");
 
     $("<div class='button' id='openadvancedoptions'>Options</div>")
         .button({
@@ -74,10 +90,16 @@ function ui_setup(job)
                 primary: "ui-icon-wrench"
             }
         }).appendTo($("#advancedoptions").parent()).click(function() {
-                eventlog("options", "Show advanced options");
-                $(this).remove();
+            if ($("#advancedoptions").is(":visible") == true) {
+                eventlog("options", "Hide advanced options");
+                $("#advancedoptions").hide();
+            }
+            else {      
+		eventlog("options", "Show advanced options");
+                //$(this).remove();
                 $("#advancedoptions").show();
-            });
+            }
+        });
 
     $("#advancedoptions").hide();
 
@@ -92,16 +114,16 @@ function ui_setup(job)
     $("#advancedoptions").append(
     "<div id='speedcontrol'>" +
     "<input type='radio' name='speedcontrol' " +
-        "value='5,1' id='speedcontrolslower'>" +
+        "value='" + Math.round(fps*0.25) + ",1' id='speedcontrolslower'>" +
     "<label for='speedcontrolslower'>Slower</label>" +
     "<input type='radio' name='speedcontrol' " +
-        "value='15,1' id='speedcontrolslow'>" +
+        "value='" + Math.round(fps*0.5) + ",1' id='speedcontrolslow'>" +
     "<label for='speedcontrolslow'>Slow</label>" +
     "<input type='radio' name='speedcontrol' " +
-        "value='30,1' id='speedcontrolnorm' checked='checked'>" +
+        "value='" + Math.round(fps) + ",1' id='speedcontrolnorm' checked='checked'>" +
     "<label for='speedcontrolnorm'>Normal</label>" +
     "<input type='radio' name='speedcontrol' " +
-        "value='90,1' id='speedcontrolfast'>" +
+        "value='" + Math.round(fps*2) + ",1' id='speedcontrolfast'>" +    
     "<label for='speedcontrolfast'>Fast</label>" +
     "</div>");
 
@@ -148,7 +170,7 @@ function ui_setupbuttons(job, player, tracks)
     });
 
     $("#rewindbutton").click(function() {
-        if (ui_disabled) return;
+        if (uiDisabled) return;
         player.pause();
         player.seek(player.job.start);
         eventlog("rewind", "Rewind to start");
@@ -156,6 +178,66 @@ function ui_setupbuttons(job, player, tracks)
         disabled: true,
         icons: {
             primary: "ui-icon-seek-first"
+        }
+    });
+
+    $("#jumpbbutton").click(function() {
+        var skip = job.skip > 0 ? -job.skip : -10;
+        if (skip != 0)
+        {
+            player.pause();
+            player.displace(skip);
+            ui_snaptokeyframe(job, player);
+        }
+    }).button({
+        disabled: false,
+        icons: {
+            primary: "ui-icon-seek-prev"
+        }
+    });
+
+    $("#jumpfbutton").click(function() {
+        var skip = job.skip > 0 ? job.skip : 10;
+        if (skip != 0)
+        {
+            player.pause();
+            player.displace(skip);
+            ui_snaptokeyframe(job, player);
+        }
+   }).button({
+        disabled: false,
+        icons: {
+            primary: "ui-icon-seek-next"
+        }
+    });
+
+    $("#stepbbutton").click(function() {
+        var skip = job.skip > 0 ? -job.skip : -1;
+        if (skip != 0)
+        {
+            player.pause();
+            player.displace(skip);
+            ui_snaptokeyframe(job, player);
+        }
+    }).button({
+        disabled: false,
+        icons: {
+            primary: "ui-icon-minus"
+        }
+    });
+
+    $("#stepfbutton").click(function() {
+        var skip = job.skip > 0 ? job.skip : 1;
+        if (skip != 0)
+        {
+            player.pause();
+            player.displace(skip);
+            ui_snaptokeyframe(job, player);
+        }
+    }).button({
+        disabled: false,
+        icons: {
+            primary: "ui-icon-plus"
         }
     });
 
@@ -258,9 +340,14 @@ function ui_setupkeyboardshortcuts(job, player)
     $(window).keypress(function(e) {
         console.log("Key press: " + e.keyCode);
 
-        if (ui_disabled)
+        if (uiDisabled)
         {
             console.log("Key press ignored because UI is disabled.");
+            return;
+        }
+
+        if (kbDisabled[0]) {
+            console.log("Keyboard disabled because user is typing.");
             return;
         }
 
@@ -275,44 +362,35 @@ function ui_setupkeyboardshortcuts(job, player)
         {
             $("#rewindbutton").click();
         }
-        else if (keycode == 110)
+        else if (keycode == 78)
         {
-            $("#newobjectbutton").click();
+            $("#newobjbtn").click();
+        }
+        else if (keycode == 77)
+        {
+            $("#newfrmbtn").click();
         }
         else if (keycode == 104)
         {
             $("#annotateoptionshideboxes").click();
         }
-        else 
+        else if (keycode == 68 || keycode == 100)
         {
-            var skip = 0;
-            if (keycode == 44 || keycode == 100)
-            {
-                skip = job.skip > 0 ? -job.skip : -10;
-            }
-            else if (keycode == 46 || keycode == 102)
-            {
-                skip = job.skip > 0 ? job.skip : 10;
-            }
-            else if (keycode == 62 || keycode == 118)
-            {
-                skip = job.skip > 0 ? job.skip : 1;
-            }
-            else if (keycode == 60 || keycode == 99)
-            {
-                skip = job.skip > 0 ? -job.skip : -1;
-            }
-
-            if (skip != 0)
-            {
-                player.pause();
-                player.displace(skip);
-
-                ui_snaptokeyframe(job, player);
-            }
+            $("#jumpbbutton").click();
+        }
+        else if (keycode == 70 || keycode == 102)
+        {
+            $("#jumpfbutton").click();
+        }
+        else if (keycode == 67 || keycode == 99)
+        {
+            $("#stepbbutton").click();
+        }
+        else if (keycode == 86 || keycode == 118)
+        {
+            $("#stepfbutton").click();
         }
     });
-
 }
 
 function ui_canresize()
@@ -338,6 +416,7 @@ function ui_setupslider(player)
             player.seek(ui.value);
             // probably too much bandwidth
             //eventlog("slider", "Seek to " + ui.value);
+            //console.log("slider", "Seek to " + ui.value);
         }
     });
 
@@ -391,7 +470,7 @@ function ui_setupclickskip(job, player, tracks, objectui)
         {
             console.log("Key frame hit");
             player.pause();
-            $("#newobjectbutton").button("option", "disabled", false);
+            $("#newobjbtn").button("option", "disabled", false);
             $("#playbutton").button("option", "disabled", false);
             tracks.draggable(true);
             tracks.resizable(ui_canresize());
@@ -400,7 +479,7 @@ function ui_setupclickskip(job, player, tracks, objectui)
         }
         else
         {
-            $("#newobjectbutton").button("option", "disabled", true);
+            $("#newobjbtn").button("option", "disabled", true);
             $("#playbutton").button("option", "disabled", true);
             tracks.draggable(false);
             tracks.resizable(false);
@@ -431,14 +510,15 @@ function ui_loadprevious(job, objectui)
     });
 }
 
-function ui_setupsubmit(job, tracks)
+function ui_setupsubmit(job, tracks, frameui)
 {
     $("#submitbutton").button({
         icons: {
             primary: 'ui-icon-check'
         }
     }).click(function() {
-        if (ui_disabled) return;
+        if (uiDisabled) return;
+        if (!frameui.saveData()) return;
         ui_submit(job, tracks);
     });
 }
@@ -602,7 +682,7 @@ function ui_showinstructions(job)
         }
     }).click(ui_closeinstructions);
 
-    instructions(job, h)
+    instructions(job, h);
 
     ui_disable();
 }
@@ -619,34 +699,45 @@ function ui_closeinstructions()
 
 function ui_disable()
 {
-    if (ui_disabled++ == 0)
+    if (uiDisabled++ == 0)
     {
-        $("#newobjectbutton").button("option", "disabled", true);
+        $("#newfrmbtn").button("option", "disabled", true);
+        $("#newobjbtn").button("option", "disabled", true);
         $("#playbutton").button("option", "disabled", true);
         $("#rewindbutton").button("option", "disabled", true);
-        $("#submitbutton").button("option", "disabled", true);
+        $("#jumpfbutton").button("option", "disabled", true);
+        $("#jumpbbutton").button("option", "disabled", true);
+        $("#stepfbutton").button("option", "disabled", true);
+        $("#stepbdbutton").button("option", "disabled", true);
+	$("#submitbutton").button("option", "disabled", true);
         $("#playerslider").slider("option", "disabled", true);
 
         console.log("Disengaged UI");
     }
 
-    console.log("UI disabled with count = " + ui_disabled);
+    console.log("UI disabled with count = " + uiDisabled);
 }
 
 function ui_enable()
 {
-    if (--ui_disabled == 0)
+    if (--uiDisabled == 0)
     {
-        $("#newobjectbutton").button("option", "disabled", false);
+        $("#newfrmbtn").button("option", "disabled", false);
+        $("#newobjbtn").button("option", "disabled", false);
         $("#playbutton").button("option", "disabled", false);
         $("#rewindbutton").button("option", "disabled", false);
+	$("#jumpfbutton").button("option", "disabled", false);
+        $("#jumpbbutton").button("option", "disabled", false);
+        $("#stepfbutton").button("option", "disabled", false);
+        $("#stepbdbutton").button("option", "disabled", false);
         $("#submitbutton").button("option", "disabled", false);
         $("#playerslider").slider("option", "disabled", false);
 
         console.log("Engaged UI");
     }
 
-    ui_disabled = Math.max(0, ui_disabled);
+    uiDisabled = Math.max(0, uiDisabled);
 
-    console.log("UI disabled with count = " + ui_disabled);
+    console.log("UI disabled with count = " + uiDisabled);
 }
+

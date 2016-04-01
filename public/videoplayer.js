@@ -3,27 +3,39 @@
  *                   function (x) { return "/images/" + x + ".jpg"; });
  * videoplayer.play();
  */
-function VideoPlayer(handle, job)
+function VideoPlayer(handle_fs, handle_rgb, handle_d, job, fps)
 {
     var me = this;
 
-    this.handle = handle;
+    this.handle = handle_rgb;
+    this.handle_fs = handle_fs;
+    this.handle_d = handle_d;
     this.job = job;
     this.frame = job.start;
     this.paused = true;
-    this.fps = 30;
+    this.fps = fps;
     this.playdelta = 1;
+
+    this.intervalsList = [];
+    this.labelNameList = [];
 
     this.onplay = []; 
     this.onpause = []; 
     this.onupdate = [];
 
+    this.handle.parent().after("<div id='frameinfo'>" + 
+                                   "<div id='curframe'>Current frame: 0</div>" +
+                                   "<div id='timer'>Elapsed time: 0 s</div>" +
+                               "</div>");
+
+    this.handle.append("<div id='frametag'></div>");
+
     /*
      * Toggles playing the video. If playing, pauses. If paused, plays.
      */
     this.toggle = function()
-    {
-        if (this.paused)
+        {
+            if (this.paused)
         {
             this.play();
         }
@@ -91,6 +103,23 @@ function VideoPlayer(handle, job)
         this.updateframe();
     }
 
+    this.updateFrameInfo = function(intervals, labelName, id) {
+        if (intervals !== undefined)
+            this.intervalsList[id] = intervals;
+        if (labelName !== undefined)
+            this.labelNameList[id] = labelName;
+    }
+
+    this.resetFrameInfo = function(id) {
+        this.intervalsList[id] = undefined;
+        this.labelNameList[id] = undefined;
+    }   
+
+    this.removeFrameInfo = function(id) {
+        this.intervalsList.splice(id, 1);
+        this.labelNameList.splice(id, 1);
+    }
+ 
     /*
      * Updates the current frame. Call whenever the frame changes.
      */
@@ -101,8 +130,36 @@ function VideoPlayer(handle, job)
 
         var url = this.job.frameurl(this.frame);
         this.handle.css("background-image", "url('" + url + "')");
+        this.handle_fs.css("background-image", "url('" + url.replace('rgb', 'fs') + "')");
+        this.handle_d.css("background-image", "url('" + url.replace('rgb', 'd') + "')");
 
-        this._callback(this.onupdate);
+        $("#curframe").replaceWith("<div id='curframe'>Current frame: " + (this.frame - job.start) + "</div>");
+        $("#timer").replaceWith("<div id='timer'>Elapsed time: " + ((this.frame - job.start)/this.fps).toFixed(3) + " s</div>");
+       
+        $("#frametag").html("<div id='frametagtextbox'></div>");
+
+        var curFrame = this.frame - this.job.start;
+
+        for (i = 0; i < this.intervalsList.length; i++) {
+            if (this.labelNameList[i] === undefined) {
+                console.assert(this.intervalsList[i] === undefined);
+                continue;
+            }
+            for (j = 0; j < this.intervalsList[i].length; j++) {
+                if (curFrame >= this.intervalsList[i][j].startValue && curFrame <= this.intervalsList[i][j].endValue) {
+                    $("#frametagtextbox").append("<div id='frametagtext'>" + this.labelNameList[i] + "</div>");
+                    break;
+                }
+            }
+        }
+
+        if ($("#frametagtextbox").children().size() === 0) {
+            $("#frametag").css("visibility", "hidden");
+        } else {
+            $("#frametag").css("visibility", "visible");
+        }
+
+        this._callback(this.onupdate);        
     }
 
     /*

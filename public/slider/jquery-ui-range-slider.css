@@ -1,0 +1,28 @@
+.ui-slider-range .range-label {
+  position: absolute;
+  text-align: center;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  *zoom: 1;
+  *display: inline;
+  width: 100%;
+  margin: 0 auto;
+  top: -30px;
+  padding: 5px;
+  font-size: 8px;
+}
+
+.ctrpanel .ui-slider {
+  margin: 40px 0 20px 0;
+}
+
+.ctrpanel .ui-slider .ui-slider-handle {
+  width: 0.2em;
+}
+
+.ctrpanel .ui-slider-horizontal .ui-slider-handle {
+  margin-left: -.1em;
+}
+
+/*# sourceMappingURL=jquery-ui-range-slider.css.map */

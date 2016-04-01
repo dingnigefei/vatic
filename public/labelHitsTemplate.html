@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <title>Hits</title>
+        <link rel="stylesheet" type="text/css" href="../css/stylesheet.css">
+</head>
+<body>
+        <div class='header'>
+                <img src='../bg.jpg'>
+                <h1>Healthcare</h1>
+        </div>
+	<div class='main'>
+		<table>
+			<tr>
+{% for i in range(numWorkers) -%}
+				<th>Worker {{ i }}</th>
+{% endfor -%}
+			</tr>
+{% for vidSet in vidSets -%}
+	{% set vidType = vidSet['type'] -%}
+	{% set vidIds = vidSet['ids'] -%}
+	{% for vidId in vidIds -%}
+			<tr>
+		{% for i in range(numWorkers) -%}
+				<td>
+					<div>
+						<p>{{ 'video_' ~ vidType ~ '_' ~ '%07d' % vidId }}</p>
+			{% set vidHits = vidHitsDict.get(labelName ~ '_video_' ~ vidType ~ '_' ~ '%07d' % vidId ~ '_' ~ '%02d' % i) -%}
+			{% for vidHit in vidHits -%}
+						<a id='{{ vidHit }}' href='{{ vidHit }}'>part {{ loop.index }}</a>
+			{% endfor -%}
+					</div>
+				</td>
+		{% endfor -%}
+			</tr>	
+		{% endfor -%}		
+	{% endfor -%}
+		</table>
+	</div>
+</body>
+</html>
+

@@ -12,6 +12,21 @@ label, .button
     font-size : 12px !important;
 }
 
+form, p
+{
+    margin: 0px;
+}
+
+.button
+{
+    margin: 5px;
+}
+
+#playerslider
+{
+    margin-top: 11px !important;
+}
+
 table td
 {
     vertical-align : top;
@@ -103,7 +118,7 @@ code
     color : #fff;
     font-weight : bold;
     margin-top : 15px;
-    margin-left :10px;
+    margin-left : 10px;
     font-family : Arial;
 }
 
@@ -123,25 +138,66 @@ code
 
 #annotatescreen
 {
-    width : 925px;
     margin : 0 auto;
+    background-color: white;
 }
 
-#videoframe
+#videoframes
 {
-    background-color : #000;
-    display : block;
+    display: table;
+}
+
+.videoframe
+{
+    background-color: #000;
+    display: table-cell;
+    position: relative;
+}
+
+#frameinfo
+{
+    width: 100%;
+    display: table;
+    padding: 5px;
+    table-layout: fixed;
+}
+
+#frametag
+{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    border: 2px solid red;
+}
+
+#frametagtextbox
+{
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    background-color: #E4E4E4;
+    display: table;
+    opacity: 0.5;
+}
+
+#frametagtext
+{
+    display: table-cell;
+    padding: 5px;
+    border: 1px solid #888888;
+}
+
+#curframe, #timer
+{
+    display: table-cell;
 }
 
 #playbutton
 {
     font-weight : bold;
     width : 80px;
-}
-
-#newobjectcontainer
-{
-    text-align : center;
 }
 
 #newobjectbutton
@@ -161,11 +217,12 @@ code
 
 #openadvancedoptions
 {
-    float : right;
+    float : left;
 }
 
 #advancedoptions
 {
+    margin : 5px;
     float : right;
 }
 
@@ -226,7 +283,7 @@ code
     margin-left : -360px;
     background-color : #fff;
     z-index : 10000000000000;
-    padding : 10px;
+    padding : 20px;
     border : 2px solid #000;
     overflow : auto;
 }
@@ -254,7 +311,7 @@ code
 
 .trackobject
 {
-    border : 2px solid black;
+    margin : 1px;
     font-family : Arial;
     font-size : 14px;
 }
@@ -265,6 +322,7 @@ code
 
 .trackobjectfoldeddown
 {
+    height: 60px
 }
 
 .trackobject p, .trackobject li, .trackobject label
@@ -308,19 +366,29 @@ code
     float : left;
 }
 
+.icon
+{
+    background-color: #fff;
+}
+
+.icon:hover
+{
+    background-color: #E4E4E4;
+}
+
 .boundingbox
 {
     position : absolute !important;
     border-style : solid;
-    border-width : 2px;
+    border-width : 1px;
     z-index : 5;
 }
 
 .boundingbox .boundingboxtext
 {
-    font-size : 14px;
+    font-size : 8px;
     /*margin-top : -18px;*/
-    color : #fff;
+    color : #E4E4E4;
 
     position : absolute;
     margin-left : -80px;
@@ -333,16 +401,20 @@ code
     cursor : default;
     z-index : 0;
 
+/*
     text-shadow: -1px 0 2px #000, 0px 1px 2px #000, 1px 0 2px #000, 0 -1px 2px #000; 
     -moz-text-shadow: -1px 0 2px #000, 0px 1px 2px #000, 1px 0 2px #000, 0 -1px 2px #000; 
     -webkit-text-shadow: -1px 0 2px #000, 0px 1px 2px #000, 1px 0 2px #000, 0 -1px 2px #000; 
+*/
 }
 
 .boundingboxhighlight .boundingboxtext
 {
+/*
     text-shadow: -1px 0 5px #000, 0px 1px 5px #000, 1px 0 5px #000, 0 -1px 5px #000; 
     -moz-text-shadow: -1px 0 5px #000, 0px 1px 5px #000, 1px 0 5px #000, 0 -1px 5px #000; 
     -webkit-text-shadow: -1px 0 5px #000, 0px 1px 5px #000, 1px 0 5px #000, 0 -1px 5px #000; 
+*/
     z-index : 1;
 }
 
@@ -428,4 +500,73 @@ code
 {
     position : relative;
     z-index : 101;
+}
+
+.ctrpanel
+{
+    margin-bottom: 10px;
+    border: 1px solid #E4E4E4;
+}
+
+#ctr-frm
+{
+    width: 100%;
+}
+
+#ctr-obj
+{
+    padding: 10px;
+}
+
+.bd-frm
+{
+      border: 2px solid #E4E4E4;
+}
+
+.ctritem-frm
+{
+    width: 100%;
+    display: table;
+    box-sizing: border-box;
+    border-bottom: 1px dashed #E4E4E4;
+    border-spacing: 5px;
+}
+
+.header
+{
+    height: 30px; 
+    display: table; 
+    width: 100%; 
+    box-sizing: border-box; 
+    padding: 5px; 
+    background-color: #E4E4E4;
+}
+
+#newfrmbtn
+{
+    display: table-cell; 
+    width: 150px;
+}
+
+#newobjbtn
+{
+    display: table-cell; 
+    width: 120px;
+}
+
+#divleftcol
+{
+    display: table-cell; 
+    padding: 20px;
+}
+
+#divrightcol 
+{
+    width: 400px;
+}
+
+#instructions
+{
+    width: 100%;
+    display: table;
 }

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hits</title>
+    <link rel="stylesheet" type="text/css" href="../css/stylesheet.css">
+  </head>
+  <body>
+    <div class='header'>
+      <img src='../bg.jpg'>
+      <h1>Healthcare</h1>
+    </div>
+    <div class='main'>
+      <table align='center'>
+        {% for video in vidSets -%}
+	  {% set vidType = video['type'] -%}
+          {% set hits = video['hits'] -%}
+	  <tr>
+	    {% if vidType == 'rgb' -%}
+	      <th>RGB Video:</th>
+	    {% elif vidType == 'd' -%}
+	      <th>Depth Video:</th>
+	    {% else -%}
+	      <th>Black/White Video:</th>
+	    {% endif -%}
+	    {% for hit in hits -%}
+              <td><a href='{{ hit }}'>video {{ vidType }} {{ loop.index }}</a></td>
+            {% endfor -%}
+	  </tr>
+        {% endfor -%}
+      </table>
+    </div>
+  </body>
+</html>

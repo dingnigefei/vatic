@@ -36,17 +36,17 @@ function BoxDrawer(container)
         this.vcrosshair = $('<div></div>').appendTo(this.container);
 
         this.vcrosshair.css({
-            width: '2px',
+            width: '1px',
             height: '100%',
             position: 'relative',
-            top: '0px',
+            top: '-1px',
             left: '0px',
             backgroundColor: this.color,
             zIndex: 1
         }).hide();
 
         this.hcrosshair.css({
-            height: '2px',
+            height: '1px',
             width: '100%',
             position: 'relative',
             top: '0px',
@@ -98,10 +98,12 @@ function BoxDrawer(container)
         if (this.drawing)
         {
             var pos = this.calculateposition(xc, yc);
-            var offset = this.container.offset();
+            //var offset = this.container.offset();
             this.handle.css({
-                "top": pos.ytl + offset.top + "px",
-                "left": pos.xtl + offset.left + "px",
+		//"top": pos.ytl + offset.top + "px",
+                "top": pos.ytl + "px",
+                //"left": pos.xtl + offset.left + "px",
+                "left": pos.xtl + "px",
                 "width": (pos.width - 3) + "px",
                 "height": (pos.height - 3)+ "px",
                 "border-color": this.color
@@ -461,7 +463,7 @@ function Track(player, color, position)
         var pos = this.handle.position();
         var width = this.handle.width();
         var height = this.handle.height();
-        var offset = this.player.handle.offset();
+        //var offset = this.player.handle.offset();
 
         if (hidden)
         {
@@ -478,8 +480,10 @@ function Track(player, color, position)
             height = 1;
         }
 
-        var xtl = pos.left - offset.left;
-        var ytl = pos.top - offset.top;
+        //var xtl = pos.left - offset.left;
+        var xtl = pos.left;
+        //var ytl = pos.top - offset.top;
+        var ytl = pos.top;
         var xbr = xtl + width + this.htmloffset;
         var ybr = ytl + height + this.htmloffset;
 
@@ -487,6 +491,7 @@ function Track(player, color, position)
         var position = new Position(xtl, ytl, xbr, ybr)
         position.occluded = estimate.occluded;
         position.outside = estimate.outside;
+        //console.log(position);
         return position;
     }
 
@@ -796,11 +801,13 @@ function Track(player, color, position)
             this.handle.removeClass("boundingboxoccluded");
         }
 
-        var offset = this.player.handle.offset();
+        //var offset = this.player.handle.offset();
 
         this.handle.css({
-            top: position.ytl + offset.top + "px",
-            left: position.xtl + offset.left + "px",
+            //top: position.ytl + offset.top + "px",
+            top: position.ytl + "px",
+	    //left: position.xtl + offset.left + "px",
+            left: position.xtl + "px",
             width: (position.width - this.htmloffset) + "px",
             height: (position.height - this.htmloffset) + "px"
         });

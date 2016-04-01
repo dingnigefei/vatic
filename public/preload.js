@@ -49,9 +49,12 @@ function preload(queue, onprogress)
 function preloadvideo(start, stop, generator, onprogress)
 {
     var queue = new Array();
-    for (var i = start; i <= stop; i++)
+    for (var i = 0; i <= (stop - start)*3; i += 3)
     {
-        queue[i-start] = generator(i);
+        var url_rgb = generator(start+i/3);
+        queue[i] = url_rgb;
+        queue[i+1] = url_rgb.replace("rgb", "fs");
+        queue[i+2] = url_rgb.replace("rgb", "d");
     }
     preload(queue, onprogress);
 }

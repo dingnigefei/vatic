@@ -6,20 +6,20 @@ function ui_build(job)
     console.log(job);
     var fps = 10;
     var screen = ui_setup(job, fps);
-    var videoframe_fs = $("#videoframe-fs");
-    var videoframe_rgb = $("#videoframe-rgb");
+    //var videoframe_fs = $("#videoframe-fs");
+    //var videoframe_rgb = $("#videoframe-rgb");
     var videoframe_d = $("#videoframe-d");
-    var player = new VideoPlayer(videoframe_fs, videoframe_rgb, videoframe_d, job, 10);
+    var player = new VideoPlayer(job, 10, videoframe_d);
     var tracks = new TrackCollection(player, job);
-    var objectui = new TrackObjectUI($("#newobjbtn"), $("#objectcontainer"), videoframe_rgb, job, player, tracks, kbDisabled);
+    var objectui = new TrackObjectUI($("#newobjbtn"), $("#objectcontainer"), videoframe_d, job, player, tracks, kbDisabled);
     var frameui = new TrackFrameUI($("#newfrmbtn"), $("#ctr-frm"), player, kbDisabled);
 
     ui_setupbuttons(job, player, tracks);
     ui_setupslider(player);
-    ui_setupsubmit(job, tracks, frameui);
+    ui_setupsubmit(frameui, objectui);
     ui_setupclickskip(job, player, tracks, objectui);
     ui_setupkeyboardshortcuts(job, player);
-    ui_loadprevious(job, objectui);
+    // ui_loadprevious(job, objectui);
 
     $("#newobjbtn").click(function() {
         if (!mturk_submitallowed())
@@ -39,8 +39,8 @@ function ui_setup(job, fps)
               "<div id='instructions' style='display: table-cell; vertical-align: middle; padding-right: 10px'>You can annotate any object, or even the frame itself.</div>" +
           "</div>" +
           "<div id='videoframes'>" +
-              "<div class='videoframe' id='videoframe-fs'></div>" +
-              "<div class='videoframe' id='videoframe-rgb'></div>" +
+              //"<div class='videoframe' id='videoframe-fs'></div>" +
+              //"<div class='videoframe' id='videoframe-rgb'></div>" +
               "<div class='videoframe' id='videoframe-d'></div>" +
           "</div>" +
           "<div id='bottombar'></div>" +
@@ -503,6 +503,9 @@ function ui_loadprevious(job, objectui)
 
         for (var i in data)
         {
+            console.dir(data[i]["label"]);
+            console.dir(data[i]["boxes"]);
+            console.dir(data[i]["attributes"]);
             objectui.injectnewobject(data[i]["label"],
                                      data[i]["boxes"],
                                      data[i]["attributes"]);
@@ -510,7 +513,7 @@ function ui_loadprevious(job, objectui)
     });
 }
 
-function ui_setupsubmit(job, tracks, frameui)
+function ui_setupsubmit(frameui, objectui)
 {
     $("#submitbutton").button({
         icons: {
@@ -518,8 +521,17 @@ function ui_setupsubmit(job, tracks, frameui)
         }
     }).click(function() {
         if (uiDisabled) return;
+        uiDisabled = true
+        var note = $("<div id='submitdialog'></div>").appendTo("#container");
+        note.html("Saving...");
         if (!frameui.saveData()) return;
-        ui_submit(job, tracks);
+        if (!objectui.saveData()) return;
+        note.html("Saved!");
+        window.setTimeout(function() {
+            note.remove();
+            uiDisabled = false
+        }, 1000);
+        //ui_submit(objectui.job, objectui.tracks);
     });
 }
 

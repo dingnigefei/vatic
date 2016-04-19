@@ -5,7 +5,7 @@ function TrackFrameUI(newfrmbtn, framectr, player, kbDisabled) {
 
     this.intervalsList = [];
     this.n = 0;
- 
+
     var self = this;
     var frameStart = [];
     var frameEnd = [];
@@ -14,15 +14,15 @@ function TrackFrameUI(newfrmbtn, framectr, player, kbDisabled) {
         framectr.append("<div class='bd-frm' id='bd-frm" + id + "'><div class='ctritem-frm'>" +
                             "<div class='button' id='startframe" + id + "' style='display: table-cell'>Set Start Frame</div>" +
                             "<div class='button' id='stopframe" + id + "' style='display: table-cell'>Set End Frame</div>" +
-                            "<div class='button' id='resetframe" + id + "' style='display: table-cell'>Reset</div>" + 
-                            "<div class='button' id='deleteframe" + id + "' style='display: table-cell'>Delete</div>" + 
-                        "</div>" + 
-                        "<div class='ctritem-frm'>" + 
+                            "<div class='button' id='resetframe" + id + "' style='display: table-cell'>Reset</div>" +
+                            "<div class='button' id='deleteframe" + id + "' style='display: table-cell'>Delete</div>" +
+                        "</div>" +
+                        "<div class='ctritem-frm'>" +
                             "<form>" +
-                                "Label name: " +   
+                                "Label name: " +
                                 "<input id='labelname-frm" + id + "' type='text' name='labelname-frm' value='Frame " + (id + 1) + "'>" +
-                            "</form>" + 
-                        "</div>" + 
+                            "</form>" +
+                        "</div>" +
                         "<div class='ctritem-frm' id='timeline-frm" + id + "'>" +
                             "<div>Timeline</div>" +
                             "<div id='slider-range" + id + "' class='ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all'></div>" +
@@ -41,7 +41,7 @@ function TrackFrameUI(newfrmbtn, framectr, player, kbDisabled) {
                 primary: "ui-icon-radio-on"
             }
         });
-        
+
         $("#stopframe" + id).click(function() {
             frameEnd[id] = player.frame - jobStart;
             console.log("end" + id + ": " + frameEnd[id]);
@@ -63,7 +63,7 @@ function TrackFrameUI(newfrmbtn, framectr, player, kbDisabled) {
                 primary: "ui-icon-radio-off"
             }
         });
-        
+
         $("#resetframe" + id).click(function() {
             self.reset(id);
         }).button({
@@ -78,16 +78,16 @@ function TrackFrameUI(newfrmbtn, framectr, player, kbDisabled) {
             icons: {
                 primary: "ui-icon-close"
             }
-        });       
+        });
 
         $("#labelname-frm" + id).focusin(function() {
             kbDisabled[0] = true;
             console.log("focus in");
         });
-        
+
         $("#labelname-frm" + id).focusout(function() {
             kbDisabled[0] = false;
-            var id = parseInt(this.id.slice("labelname-frm".length)); 
+            var id = parseInt(this.id.slice("labelname-frm".length));
             player.updateFrameInfo(undefined, $("#labelname-frm" + id).val(), id);
             console.log("focus out");
         });
@@ -110,36 +110,36 @@ function TrackFrameUI(newfrmbtn, framectr, player, kbDisabled) {
         }
     });
 /*
-    this.insert = function(newInterval) { 
+    this.insert = function(newInterval) {
         console.log("insert");
         var intervals = this.intervals;
         var l = [];
         var count = 0;
- 
-        while (count < intervals.length) {  
+
+        while (count < intervals.length) {
             if (newInterval.startValue <= intervals[count].endValue) {
-                if (newInterval.endValue >= intervals[count].startValue) {  
-                    newInterval.startValue = Math.min(intervals[count].startValue, newInterval.startValue); 
+                if (newInterval.endValue >= intervals[count].startValue) {
+                    newInterval.startValue = Math.min(intervals[count].startValue, newInterval.startValue);
                 }
                 break;
-            }  
-            l.push(intervals[count]);  
+            }
+            l.push(intervals[count]);
             count += 1;
         }
 
         l.push(newInterval);
- 
-        while (count < intervals.length) {  
+
+        while (count < intervals.length) {
             if (newInterval.endValue < intervals[count].startValue) {
                 break;
             }
             var lastIdx = l.length - 1;
-            l[lastIdx].endValue = Math.max(intervals[count].endValue, l[lastIdx].endValue); 
+            l[lastIdx].endValue = Math.max(intervals[count].endValue, l[lastIdx].endValue);
             count += 1;
         }
 
-        while (count < intervals.length) {  
-            l.push(intervals[count]); 
+        while (count < intervals.length) {
+            l.push(intervals[count]);
             count += 1;
         }
         for (i = 0; i < l.length; i++) {
@@ -153,7 +153,7 @@ function TrackFrameUI(newfrmbtn, framectr, player, kbDisabled) {
     var updateHandles = function(ui, customContent) {
         var range = ui.range;
         var content = $("<div style='left: -4px; position: absolute;'>" + range.startValue + "</div>" +
-                        "<div style='right: -4px; position: absolute;'>" + range.endValue + "</div>");  
+                        "<div style='right: -4px; position: absolute;'>" + range.endValue + "</div>");
         return content;
     };
 
@@ -194,7 +194,7 @@ function TrackFrameUI(newfrmbtn, framectr, player, kbDisabled) {
     };
 
     this.deleteFrame = function(id) {
-        // slider-range, timeline-frm, startframe, endframe, labelname-frm 
+        // slider-range, timeline-frm, startframe, endframe, labelname-frm
         console.log("delete " + id);
         $("#bd-frm" + id).remove();
 
@@ -208,14 +208,14 @@ function TrackFrameUI(newfrmbtn, framectr, player, kbDisabled) {
             $("#resetframe" + i).attr("id", "resetframe" + (i - 1));
             $("#deleteframe" + i).attr("id", "deleteframe" + (i - 1));
         }
-        
+
         this.intervalsList.splice(id, 1);
         this.n--;
         player.removeFrameInfo(id)
     };
 
     this.saveData = function() {
-        console.log("saving data");
+        console.log("saving data from frameui");
 
         var labels = [];
         var names = [];
@@ -230,18 +230,20 @@ function TrackFrameUI(newfrmbtn, framectr, player, kbDisabled) {
 
             var serializedData = JSON.stringify(serialize(this.intervalsList[i], jobLen)); // a binary array of int
 
-            console.log(serializedData); 
-
             labels.push(serializedData);
             names.push(labelName);
         }
 
         var jobid = player.job.jobid; // an int
 
+        console.log('start');
+        console.log(JSON.stringify(labels));
+        console.log('end');
         var data = {
             label: JSON.stringify(labels),
             name: JSON.stringify(names),
-            id: jobid
+            id: jobid,
+            flag: 0
         };
 
         $.ajax({
@@ -250,7 +252,7 @@ function TrackFrameUI(newfrmbtn, framectr, player, kbDisabled) {
             async: true,
             data: {video_data: data},
             success: function(data) {
-                console.log("data saved");
+                console.log("frameui data saved");
             },
             failure: function(errMsg) {
                 alert(errMsg);
@@ -261,28 +263,33 @@ function TrackFrameUI(newfrmbtn, framectr, player, kbDisabled) {
     };
 
     this.loadData = function(player) {
-        console.log("loading data");
+        console.log("loading data to frameui");
 
-        var labels, labelName;
+        var labels, names;
         var jobid = player.job.jobid;
+
+        var load = {
+            id: jobid,
+            flag: 0
+        };
 
         $.ajax({
             type: "POST",
             url: "http://navi.stanford.edu/data_server/dataServer.php",
             async: true,
-            data: {video_id: jobid},
+            data: {video_load: load},
             success: function(response) {
                 var message = JSON.parse(response);
-                labelName = message["label_name"].split(",");
+                names = message["label_name"].split(",");
                 labels = message["labels"].split("],[").join("]#[").split("#");
 
-                if (labelName.length === 1 && labelName[0] === "")
+                if (names.length === 1 && names[0] === "")
                     return;
 
                 labels.forEach(function(label, idx) {
                     newfrmbtn.click();
                     self.intervalsList[idx] = deserialize(JSON.parse(label));
-                    $("#labelname-frm" + idx).val(labelName[idx]);       
+                    $("#labelname-frm" + idx).val(names[idx]);
                     self.updateTimeline(idx);
                     player.updateFrameInfo(self.intervalsList[idx], $("#labelname-frm" + idx).val(), idx);
                 });
@@ -403,4 +410,3 @@ var mergeList = function(list1, list2) {
 
     return solution;
 };
-

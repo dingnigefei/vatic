@@ -15,7 +15,8 @@
   while($row = mysqli_fetch_array($result)) {
     array_push($video_id, $row["video_id"]);
   }
-  print_r($video_id);
+
+  // $video_id = array(3705, 3706, 3707, 3712, 3714, 3719, 3720); // Hard code for testing
 ?>
 
 <!DOCTYPE html>
@@ -23,37 +24,81 @@
   <head>
     <title>Hits</title>
     <link rel="stylesheet" type="text/css" href="../css/stylesheet.css">
+    <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js'></script>
+    <script type="text/javascript">
+      var video_ids_raw = <?php echo '["' . implode('", "', $video_id) . '"]' ?>;
+
+      function updateVideoStatus() {
+        // var info = document.getElementById('info');
+        // var offset = info.innerHTML.split(' ').slice(-1)[0];
+        var offset = 4453;
+        console.log(offset);
+        var video_ids = video_ids_raw.map( function (value) {
+          var newVal = parseInt(value) - parseInt(offset);
+          return newVal.toString();
+        })
+        console.log(video_ids);
+
+        var table = document.getElementById('table');
+        for (var i = 0, row; row = table.rows[i]; i++) {
+          for (var j = 0, col; col = row.cells[j]; j++) {
+            var videoTag = col.childNodes[0];
+            if (typeof(videoTag.innerHTML) == 'string') {
+              var vid = (videoTag.innerHTML).split(' ')[1];
+              // console.log(vid);
+              if (contains(video_ids, vid)) {
+                col.innerHTML += '<br>Finished';
+              } else {
+                console.log('Not Found!');
+              }
+            }
+          }
+        }
+      }
+
+      function contains(a, obj) {
+        var i = a.length;
+        while (i--) {
+          if (a[i] === obj) {
+            return true;
+          }
+        }
+        return false;
+      }
+    </script>
   </head>
-  <body>
+  <body onload=updateVideoStatus()>
     <div class='header'>
       <img src='../bg.jpg'>
       <h1>Healthcare</h1>
     </div>
     <div class='main'>
-      <table align='center'>
+      <!-- <p id='info'>Completed Videos: <br> <?php foreach($video_id as $id) { echo "$id <br>"; } ?>Offset: {{ offset }}</p> -->
+      <table align='center' id='table'>
         {% for video in vidSets -%}
-	  {% set date = video['date'] -%}
+          {% set date = video['date'] -%}
           {% set names = video['names'] -%}
           {% set ids = video['ids'] -%}
           {% set hits = video['hits'] -%}
-	  <tr>
-	    {% if date == 17 -%}
-	      <th>Oct 17th:</th>
-	    {% elif date == 18 -%}
-	      <th>Oct 18th:</th>
-	    {% elif date == 19 -%}
-	      <th>Oct 19th:</th>
-	    {% else -%}
-	      <th>Oct 20th:</th>
-	    {% endif -%}
-            {% for name in names -%}
-              {% set id = '%d' % ids[loop.index-1] -%}
-	      <!-- {% set url = 'http://navi.stanford.edu/wrapper/' ~ name ~ '.php?page_id=' ~ id -%} -->
-              {% set url = '%s' % hits[loop.index-1] -%}
-	      <td><a id='{{ id }}' href='{{ url }}'>video {{ vidType }} {{ loop.index }}</a></td>
-	    {% endfor -%}
-      	  </tr>
-	{% endfor -%}
+          {% set threshold = 10 -%}
+          {% for name in names -%}
+            {% if (loop.index-1) % 10 == 0 %}
+              <tr>
+                {% if date == 17 -%}
+                  <th>Oct 17th:</th>
+                {% elif date == 18 -%}
+                  <th>Oct 18th:</th>
+                {% elif date == 19 -%}
+                  <th>Oct 19th:</th>
+                {% else -%}
+                  <th>Oct 20th:</th>
+                {% endif -%}
+            {% endif -%}
+            {% set id = '%d' % ids[loop.index-1] -%}
+            {% set url = '%s' % hits[loop.index-1] -%}
+            <td><a id='{{ id }}' href='{{ url }}'>video {{ id }} </a></td>
+          {% endfor -%}
+        {% endfor -%}
       </table>
     </div>
   </body>

@@ -3,13 +3,13 @@
  *                   function (x) { return "/images/" + x + ".jpg"; });
  * videoplayer.play();
  */
-function VideoPlayer(handle_fs, handle_rgb, handle_d, job, fps)
+function VideoPlayer(job, fps, handle, handle_left = null, handle_right = null)
 {
     var me = this;
 
-    this.handle = handle_rgb;
-    this.handle_fs = handle_fs;
-    this.handle_d = handle_d;
+    this.handle = handle;
+    this.handle_left = handle_left;
+    this.handle_right = handle_right;
     this.job = job;
     this.frame = job.start;
     this.paused = true;
@@ -19,11 +19,11 @@ function VideoPlayer(handle_fs, handle_rgb, handle_d, job, fps)
     this.intervalsList = [];
     this.labelNameList = [];
 
-    this.onplay = []; 
-    this.onpause = []; 
+    this.onplay = [];
+    this.onpause = [];
     this.onupdate = [];
 
-    this.handle.parent().after("<div id='frameinfo'>" + 
+    this.handle.parent().after("<div id='frameinfo'>" +
                                    "<div id='curframe'>Current frame: 0</div>" +
                                    "<div id='timer'>Elapsed time: 0 s</div>" +
                                "</div>");
@@ -108,18 +108,19 @@ function VideoPlayer(handle_fs, handle_rgb, handle_d, job, fps)
             this.intervalsList[id] = intervals;
         if (labelName !== undefined)
             this.labelNameList[id] = labelName;
+            $("#frametagtext").replaceWith("<div id='frametagtext'>" + labelName + "</div>");
     }
 
     this.resetFrameInfo = function(id) {
         this.intervalsList[id] = undefined;
         this.labelNameList[id] = undefined;
-    }   
+    }
 
     this.removeFrameInfo = function(id) {
         this.intervalsList.splice(id, 1);
         this.labelNameList.splice(id, 1);
     }
- 
+
     /*
      * Updates the current frame. Call whenever the frame changes.
      */
@@ -130,12 +131,14 @@ function VideoPlayer(handle_fs, handle_rgb, handle_d, job, fps)
 
         var url = this.job.frameurl(this.frame);
         this.handle.css("background-image", "url('" + url + "')");
-        this.handle_fs.css("background-image", "url('" + url.replace('rgb', 'fs') + "')");
-        this.handle_d.css("background-image", "url('" + url.replace('rgb', 'd') + "')");
+        if (this.handle_left !== null && this.handle_right !== null) {
+            this.handle_left.css("background-image", "url('" + url.replace('d', 'rgb') + "')");
+            this.handle_right.css("background-image", "url('" + url.replace('d', 'fs') + "')");
+        }
 
         $("#curframe").replaceWith("<div id='curframe'>Current frame: " + (this.frame - job.start) + "</div>");
         $("#timer").replaceWith("<div id='timer'>Elapsed time: " + ((this.frame - job.start)/this.fps).toFixed(3) + " s</div>");
-       
+
         $("#frametag").html("<div id='frametagtextbox'></div>");
 
         var curFrame = this.frame - this.job.start;
@@ -159,7 +162,7 @@ function VideoPlayer(handle_fs, handle_rgb, handle_d, job, fps)
             $("#frametag").css("visibility", "visible");
         }
 
-        this._callback(this.onupdate);        
+        this._callback(this.onupdate);
     }
 
     /*

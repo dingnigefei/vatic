@@ -101,7 +101,7 @@ code
     font-family : Arial;
 }
 
-#loadingscreenslider 
+#loadingscreenslider
 {
     background-color : #D5E8FF;
     width : 100%;
@@ -144,20 +144,21 @@ code
 
 #videoframes
 {
-    display: table;
+    //display: table;
 }
 
 .videoframe
 {
     background-color: #000;
-    display: table-cell;
+    /* display: table-cell; */
+    margin: auto;
     position: relative;
 }
 
 #frameinfo
 {
     width: 100%;
-    display: table;
+    /* display: table; */
     padding: 5px;
     table-layout: fixed;
 }
@@ -169,7 +170,7 @@ code
     right: 0px;
     top: 0px;
     bottom: 0px;
-    border: 2px solid red;
+    border: 2px solid #7FFFD4;
 }
 
 #frametagtextbox
@@ -182,11 +183,20 @@ code
     opacity: 0.5;
 }
 
-#frametagtext
+#objecttagtextbox
+{
+    background-color: #E4E4E4;
+    display: table;
+    opacity: 0.5;
+    float: right;
+}
+
+#frametagtext, #objecttagtext
 {
     display: table-cell;
     padding: 5px;
     border: 1px solid #888888;
+    color: black;
 }
 
 #curframe, #timer
@@ -314,6 +324,7 @@ code
     margin : 1px;
     font-family : Arial;
     font-size : 14px;
+    padding: 3px;
 }
 
 .trackobjectfoldedup
@@ -386,7 +397,7 @@ code
 
 .boundingbox .boundingboxtext
 {
-    font-size : 8px;
+    font-size : 12px;
     /*margin-top : -18px;*/
     color : #E4E4E4;
 
@@ -402,18 +413,18 @@ code
     z-index : 0;
 
 /*
-    text-shadow: -1px 0 2px #000, 0px 1px 2px #000, 1px 0 2px #000, 0 -1px 2px #000; 
-    -moz-text-shadow: -1px 0 2px #000, 0px 1px 2px #000, 1px 0 2px #000, 0 -1px 2px #000; 
-    -webkit-text-shadow: -1px 0 2px #000, 0px 1px 2px #000, 1px 0 2px #000, 0 -1px 2px #000; 
+    text-shadow: -1px 0 2px #000, 0px 1px 2px #000, 1px 0 2px #000, 0 -1px 2px #000;
+    -moz-text-shadow: -1px 0 2px #000, 0px 1px 2px #000, 1px 0 2px #000, 0 -1px 2px #000;
+    -webkit-text-shadow: -1px 0 2px #000, 0px 1px 2px #000, 1px 0 2px #000, 0 -1px 2px #000;
 */
 }
 
 .boundingboxhighlight .boundingboxtext
 {
 /*
-    text-shadow: -1px 0 5px #000, 0px 1px 5px #000, 1px 0 5px #000, 0 -1px 5px #000; 
-    -moz-text-shadow: -1px 0 5px #000, 0px 1px 5px #000, 1px 0 5px #000, 0 -1px 5px #000; 
-    -webkit-text-shadow: -1px 0 5px #000, 0px 1px 5px #000, 1px 0 5px #000, 0 -1px 5px #000; 
+    text-shadow: -1px 0 5px #000, 0px 1px 5px #000, 1px 0 5px #000, 0 -1px 5px #000;
+    -moz-text-shadow: -1px 0 5px #000, 0px 1px 5px #000, 1px 0 5px #000, 0 -1px 5px #000;
+    -webkit-text-shadow: -1px 0 5px #000, 0px 1px 5px #000, 1px 0 5px #000, 0 -1px 5px #000;
 */
     z-index : 1;
 }
@@ -449,7 +460,7 @@ code
 
 .boundingboxdim
 {
-    opacity : 0.3 !important; 
+    opacity : 0.3 !important;
 }
 
 .boundingboxlocked
@@ -534,33 +545,33 @@ code
 
 .header
 {
-    height: 30px; 
-    display: table; 
-    width: 100%; 
-    box-sizing: border-box; 
-    padding: 5px; 
+    height: 30px;
+    display: table;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 5px;
     background-color: #E4E4E4;
 }
 
 #newfrmbtn
 {
-    display: table-cell; 
+    display: table-cell;
     width: 150px;
 }
 
 #newobjbtn
 {
-    display: table-cell; 
+    display: table-cell;
     width: 120px;
 }
 
 #divleftcol
 {
-    display: table-cell; 
+    display: table-cell;
     padding: 20px;
 }
 
-#divrightcol 
+#divrightcol
 {
     width: 400px;
 }

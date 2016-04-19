@@ -14,7 +14,7 @@ labelName = "HospitalHygiene"
 vidFps = 10;
 vidLen = vidFps * 20;
 # vidTypes = {'rgb', 'd', 'fs'}
-vidTypes = {'rgb'}
+vidTypes = {'d'}
 
 generateHits = True;
 
@@ -24,17 +24,18 @@ with open(oldHitsFile) as f:
 
 existingHits = oldHits
 id = 0
+offset = '0'
 
 if generateHits:
   for vidType in vidTypes:
     for video in vidSets:
       indexVid = 0
-      frameSetDir = video['dir']  
+      frameSetDir = video['dir']
       frameDate = video['date']
       vidName = '%s_video_%s_%d_%d' %(labelName, vidType, frameDate, indexVid)
       framesDir = '%s/%s/frame_%s' %(frameRootDir, frameSetDir, vidType)
-      
-      # upload all videos (i.e. rgb, d, fg) 
+
+      # upload all videos (i.e. rgb, d, fg)
       loadVidCmd = 'turkic load %s %s %s --offline --length %d --blow-radius 0 --overlap 0' %(vidName, framesDir, labelName, vidLen)
       print loadVidCmd
       subprocess.check_call(loadVidCmd, shell=True)
@@ -46,16 +47,25 @@ if generateHits:
       newHits = sorted(newHits)
       print vidType
       print newHits
- 
-      # only save rgb video information
-      if vidType == 'rgb':
+
+      # find video id offset
+      if id == 0:
+        url = newHits[0] # e.g url = 'http://navi.stanford.edu/?id=3707&hitId=offline'
+        offset = url.split('&')[0].split('=')[1]
+        print '##############################'
+        print offset
+        print '##############################'
+
+      # only save depth video information
+      if vidType == 'd':
         video['hits'] = newHits
         hitsFile = '%s/%s.hits' % (hitsDir, vidName)
         f = open(hitsFile, 'a')
-	index = 0
+        index = 0
         for hit in video['hits']:
           f.write(hit + '\n')
-          name = '%s_%d' %(vidName, index)
+          #   name = '%s_%d' %(vidName, index)
+          name = '%s_%d' %(vidName, id)
           video['names'].append(name)
           video['ids'].append(id)
           id += 1
@@ -63,7 +73,7 @@ if generateHits:
 
         f.close()
       indexVid += 1
-  
+
       print video['names']
       print video['ids'] # used as page id later
 
@@ -81,7 +91,7 @@ env = Environment(loader = FileSystemLoader(PATH))
 
 #write wrap label hits html
 vidWrapperTemplate = env.get_template('/public/wrapper/videoWrapperTemplate.php')
-context = {'vidSets': vidSets}
+context = {'vidSets': vidSets, 'offset': offset}
 wrapperFile = '%s/%s_wrapper.php' %(wrapperDir, labelName)
 with open(wrapperFile, 'w') as f:
   html = vidWrapperTemplate.render(context)
@@ -116,9 +126,8 @@ for labelHitsFile in labelHitsFiles:
   labelNames.append(labelName)
 
 #context = { 'labelNames': labelNames }
-context = {'labelNames': [labelName]} 
+context = {'labelNames': [labelName]}
 
 with open(masterHitsFile, 'w') as f:
   html = masterHitsTemplate.render(context)
   f.write(html)
-

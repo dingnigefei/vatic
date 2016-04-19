@@ -4,6 +4,7 @@
   $server = "localhost";
   $user_name = "root";
   $password = "";
+  $var = '';
 
   $conn = mysqli_connect($server, $user_name, $password) or die ('Failed to Connect '.mysqli_error($conn));
   mysqli_select_db($conn, "vatic") or die ('Failed to Access DB'.mysqli_error($conn));
@@ -32,4 +33,3 @@
     }
   }
 ?>
-

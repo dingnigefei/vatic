@@ -18,6 +18,113 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks, kbDis
 
     this.objects = [];
 
+    this.loadData = function() {
+        console.log("loading data to objectui");
+
+        var jobid = this.job.jobid;
+
+        var load = {
+            id: jobid,
+            flag: 1
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "http://navi.stanford.edu/data_server/dataServer.php",
+            async: true,
+            data: {video_load: load},
+            success: function(response) {
+                var message = JSON.parse(response);
+                var names = message["label_name"].split(",");;
+                var labels = message["labels"].split("],[").join("]#[").split("#");
+                labels = JSON.parse(labels);
+
+                if (names.length === 1 && names[0] === "")
+                    return;
+
+                for (i = 0; i < names.length; i++) {
+                    console.log(names[i]);
+                    console.log(labels[i])
+                    var boxes = [];
+                    var count = 0;
+                    for (var key in labels[i][1]) {
+                        boxes[count] = labels[i][1][key];
+                        boxes[count].splice(4, 0, parseInt(key));
+                        var tmp = boxes[count][5];
+                        boxes[count][5] = boxes[count][6]&1;
+                        boxes[count][6] = tmp&1;
+                        count++;
+                    }
+                    me.injectnewobject(names[i], boxes, {});
+                }
+
+                console.log("data loaded");
+            }
+        });
+    };
+
+    this.saveData = function() {
+        console.log("saving data from objectui");
+
+        var names = [];
+        for (i = 0; i < this.counter; i++) {
+            var labelName = $("#labelname-obj" + i).val();
+
+            if (labelName === "") {
+                alert("The label name should not be empty.");
+                return false;
+            }
+
+            names.push(labelName);
+        }
+
+        var jobid = this.job.jobid;
+
+        console.log('start');
+        console.log(this.tracks.serialize());
+        console.log(names)
+        console.log('end');
+        var data = {
+            label: this.tracks.serialize(),
+            name: JSON.stringify(names),
+            id: jobid,
+            flag: 1
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "http://navi.stanford.edu/data_server/dataServer.php",
+            async: true,
+            data: {video_data: data},
+            success: function(data) {
+                console.log("objectui data saved");
+            },
+            failure: function(errMsg) {
+                alert(errMsg);
+            }
+        });
+
+        return true;
+    }
+
+    this.removeTrackObject = function(id) {
+        console.log("remove object "+id);
+        for (i = id+1; i < this.counter; i++) {
+            this.objects[i].id--;
+            $("#trackobjectheader"+i).attr("id", "trackobjectheader"+(i-1));
+            $("#labelname-obj"+i).attr("id", "labelname-obj"+(i-1));
+            $("#trackobjectdetails"+i).attr("id", "trackobjectdetails"+(i-1));
+            $("#trackobject"+i+"lost").attr("id", "trackobject"+(i-1)+"lost");
+            $("#trackobject"+i+"occluded").attr("id", "trackobject"+(i-1)+"occluded");
+            $("label[for='trackobject"+i+"lost']").attr("for", "trackobject"+(i-1)+"lost");
+            $("label[for='trackobject"+i+"occluded']").attr("for", "trackobject"+(i-1)+"occluded");
+        }
+        this.objects.splice(id, 1);
+        this.tracks.tracks.splice(id, 1);
+        this.counter--;
+        //console.log(tracks.serialize());
+    }
+
     this.startnewobject = function()
     {
         if (this.button.button("option", "disabled"))
@@ -41,7 +148,7 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks, kbDis
 
         this.currentobject = new TrackObject(this.job, this.player,
                                              this.container,
-                                             this.currentcolor);
+                                             this.currentcolor, me);
         this.currentobject.statedraw();
 
         this.tracks.resizable(false);
@@ -60,7 +167,7 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks, kbDis
         this.currentobject.onready.push(function() {
             me.stopnewobject();
         });
-        
+
         this.currentobject.initialize(this.counter, track, this.tracks);
         this.currentobject.stateclassify();
     }
@@ -100,7 +207,7 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks, kbDis
 
         this.currentcolor = this.pickcolor();
         var obj = new TrackObject(this.job, this.player,
-                                  container, this.currentcolor);
+                                  container, this.currentcolor, me);
 
         function convert(box)
         {
@@ -116,7 +223,7 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks, kbDis
         }
 
         obj.initialize(this.counter, track, this.tracks);
-        obj.finalize(label);
+        obj.finalize(label, true);
 
         for (var i = 0; i < attributes.length; i++)
         {
@@ -147,6 +254,7 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks, kbDis
             me.stopdrawing(position);
         });
 
+        /*
         var html = "<p>In this video, please track all of these objects:</p>";
         html += "<ul>";
         for (var i in this.job.labels)
@@ -156,6 +264,7 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks, kbDis
         html += "</ul>";
 
         this.instructions = $(html).appendTo(this.container);
+        */
     }
 
     this.disable = function()
@@ -190,9 +299,11 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks, kbDis
     {
         return this.availcolors[this.availcolors.push(this.availcolors.shift()) - 1];
     }
+
+    this.loadData();
 }
 
-function TrackObject(job, player, container, color)
+function TrackObject(job, player, container, color, trackObjectUI)
 {
     var me = this;
 
@@ -278,14 +389,15 @@ function TrackObject(job, player, container, color)
     this.remove = function()
     {
         this.handle.slideUp(null, function() {
-            me.handle.remove(); 
+            me.handle.remove();
         });
         this.track.remove();
+        trackObjectUI.removeTrackObject(this.id);
     }
 
     this.statedraw = function()
     {
-        var html = "<p>Draw a box around one of these objects:</p>"; 
+        var html = "<p>Draw a box around one of these objects:</p>";
 
         html += "<ul>";
         for (var i in this.job.labels)
@@ -305,7 +417,7 @@ function TrackObject(job, player, container, color)
     this.stateclassify = function()
     {
         this.drawinst.slideUp(null, function() {
-            me.drawinst.remove(); 
+            me.drawinst.remove();
         });
 
         var length = 0;
@@ -335,7 +447,7 @@ function TrackObject(job, player, container, color)
 
             $("input[name='classification" + this.id + "']").click(function() {
                 me.classifyinst.slideUp(null, function() {
-                    me.classifyinst.remove(); 
+                    me.classifyinst.remove();
                 });
 
                 for (var i in me.job.labels)
@@ -352,8 +464,8 @@ function TrackObject(job, player, container, color)
             });
         }
     }
-    
-    this.finalize = function(labelid)
+
+    this.finalize = function(labelid, loadLabelName=false)
     {
         this.label = labelid;
         this.track.label = labelid;
@@ -361,17 +473,30 @@ function TrackObject(job, player, container, color)
         this.headerdetails = $("<div style='float:right;'></div>").appendTo(this.handle);
         //console.log(labelid, this.id, this.label, this.job.labels[this.label]);
         //this.header = $("<input id='trackobjectheader" + this.id + "' value='Object " + (this.id + 1) + "' type='text'></input>").appendTo(this.handle).hide().slideDown();
-        $("#trackobjectheader" + this.id).focusin(function() {
+
+        //this.header = $("<p class='trackobjectheader'><strong>" + this.job.labels[this.label] + " " + (this.id + 1) + "</strong></p>").appendTo(this.handle).hide().slideDown();
+        labelName = loadLabelName ? labelid : ("Object "+(this.id+1))
+        this.header = $("<div class='trackobjectheader' id='trackobjectheader" + this.id + "'>" +
+                            "<form>" +
+                                "Label name: " +
+                                //"<input id='labelname-obj" + this.id + "' type='text' name='labelname-obj' value='Object " + (this.id + 1) + "'>" +
+                                "<input id='labelname-obj" + this.id + "' type='text' name='labelname-obj' value='"+labelName+"'>" +
+                            "</form>" +
+                            //"<input id='labelname-obj" + this.id + "' type='text' value='Object " + (this.id + 1) + "'>" +
+                        "</div>").appendTo(this.handle).hide().slideDown();
+
+        $("#labelname-obj" + this.id).focusin(function() {
             kbDisabled[0] = true;
             console.log("focus in");
         });
-         $("#trackobjectheader" + this.id).focusout(function() {
+        $("#labelname-obj" + this.id).focusout(function() {
             kbDisabled[0] = false;
             console.log("focus out");
+            me.updateboxtext();
         });
-        this.header = $("<p class='trackobjectheader'><strong>" + this.job.labels[this.label] + " " + (this.id + 1) + "</strong></p>").appendTo(this.handle).hide().slideDown();
+
         //this.opencloseicon = $('<div class="ui-icon ui-icon-triangle-1-e"></div>').prependTo(this.header);
-        this.details = $("<div class='trackobjectdetails'></div>").appendTo(this.handle).hide();
+        this.details = $("<div id='trackobjectdetails" + this.id + "'></div>").appendTo(this.handle).hide();
 
         this.setupdetails();
 
@@ -393,7 +518,7 @@ function TrackObject(job, player, container, color)
 
     this.updateboxtext = function()
     {
-        var str = "<strong>" + this.job.labels[this.label] + " " + (this.id + 1) + "</strong>";
+        var str = "<div id='objecttagtextbox'><div id='objecttagtext'>" + $("#labelname-obj" + this.id).val() + "</div></div>";
 
         var count = 0;
         for (var i in this.job.attributes[this.track.label])
@@ -435,7 +560,7 @@ function TrackObject(job, player, container, color)
 
                     me.updateboxtext();
 
-                    if (checked) 
+                    if (checked)
                     {
                         eventlog("markattribute", "Mark object as " + me.job.attributes[me.track.label][attributeid]);
                     }
@@ -515,7 +640,7 @@ function TrackObject(job, player, container, color)
         $("#trackobject" + this.id + "tooltip").click(function() {
             me.toggletooltip(false);
         }).mouseout(function() {
-            me.hidetooltip(); 
+            me.hidetooltip();
         });
     }
 
@@ -598,7 +723,7 @@ function TrackObject(job, player, container, color)
                 y = cpos.top + cheight - 215;
             }
         }
-        
+
         var numannotations = 0;
         var frames = [];
         for (var i in this.track.journal.annotations)
@@ -713,7 +838,7 @@ function TrackObject(job, player, container, color)
         if (this.tooltip != null)
         {
             this.tooltip.slideUp(250, function() {
-                $(this).remove(); 
+                $(this).remove();
             });
             this.tooltip = null;
             window.clearInterval(this.tooltiptimer);

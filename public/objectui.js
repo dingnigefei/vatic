@@ -397,14 +397,15 @@ function TrackObject(job, player, container, color, trackObjectUI)
 
     this.statedraw = function()
     {
-        var html = "<p>Draw a box around one of these objects:</p>";
-
+        var html = "<p>Draw a box around any object.</p>";
+        /*
         html += "<ul>";
         for (var i in this.job.labels)
         {
             html += "<li>" + this.job.labels[i] + "</li>";
         }
         html += "</ul>";
+        */
         html += "<p>Do not annotate the same object twice.</p>";
 
         this.drawinst = $("<div>" + html + "</div>").appendTo(this.handle);

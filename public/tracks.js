@@ -99,13 +99,14 @@ function BoxDrawer(container)
         {
             var pos = this.calculateposition(xc, yc);
             //var offset = this.container.offset();
+            //console.log("updatedrawing: " + pos.ytl + "," + pos.xtl + "," + pos.width + "," + pos.height);
             this.handle.css({
 		//"top": pos.ytl + offset.top + "px",
                 "top": pos.ytl + "px",
                 //"left": pos.xtl + offset.left + "px",
                 "left": pos.xtl + "px",
-                "width": (pos.width - 3) + "px",
-                "height": (pos.height - 3)+ "px",
+                "width": (pos.width - 0) + "px",
+                "height": (pos.height - 0)+ "px",
                 "border-color": this.color
             });
         }
@@ -427,7 +428,7 @@ function Track(player, color, position)
     this.player = player;
     this.handle = null;
     this.color = color;
-    this.htmloffset = 3;
+    this.htmloffset = 0;
     this.deleted = false;
 
     this.onmouseover = [];
@@ -463,6 +464,7 @@ function Track(player, color, position)
         var pos = this.handle.position();
         var width = this.handle.width();
         var height = this.handle.height();
+        console.log("handle: " + pos.left + "," + pos.top + "," + this.handle.width() + "," + this.handle.height());
         //var offset = this.player.handle.offset();
 
         if (hidden)
@@ -486,6 +488,8 @@ function Track(player, color, position)
         var ytl = pos.top;
         var xbr = xtl + width + this.htmloffset;
         var ybr = ytl + height + this.htmloffset;
+
+        console.log("pollposition: " + xtl + "," + ytl + "," + xbr + "," + ybr);
 
         var estimate = this.estimate(this.player.frame);
         var position = new Position(xtl, ytl, xbr, ybr)
@@ -913,7 +917,7 @@ function Track(player, color, position)
         {
             return "";
         }
-        var str = "[" + this.label + "," + this.journal.serialize() + ",{";
+        var str = "[" + this.journal.serialize() + ",{";
 
         var length = 0;
         for (var i in this.attributejournals)

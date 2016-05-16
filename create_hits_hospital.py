@@ -4,15 +4,29 @@ import sys
 import glob
 from jinja2 import Environment, FileSystemLoader
 
-frameRootDir = '/scail/data/group/vision/u/syyeung/hospital/data'
-vidSets = [{'date': 17, 'dir': 'cvpr10-17-15afternoon', 'hits': [], 'ids': [], 'names': []}, {'date': 18, 'dir': 'cvpr10-18-15morning', 'hits': [], 'ids': [], 'names': []}, {'date': 19, 'dir': 'cvpr10-19-15morning', 'hits': [], 'ids': [], 'names': []}, {'date': 20, 'dir': 'cvpr10-20-15morning', 'hits': [], 'ids': [], 'names': []}]
+# frameRootDir = '/scail/data/group/vision/u/syyeung/hospital/data'
+frameRootDir = '/scail/data/group/vision/u/syyeung/hospital/data/children_hospital'
+stations = [s for s in os.listdir(frameRootDir) if s.find('0') != -1]
+stations.sort()
+
+# vidSets = [{'date': 17, 'dir': 'cvpr10-17-15afternoon', 'hits': [], 'ids': [], 'names': []}, \
+#            {'date': 18, 'dir': 'cvpr10-18-15morning', 'hits': [], 'ids': [], 'names': []}, \
+#            {'date': 19, 'dir': 'cvpr10-19-15morning', 'hits': [], 'ids': [], 'names': []}, \
+#            {'date': 20, 'dir': 'cvpr10-20-15morning', 'hits': [], 'ids': [], 'names': []}]
+
+vidSets = []
+for s in stations:
+    vidSets.append({'station': s, 'dir': s, 'hits': [], 'ids': [], 'names': []})
+
+print vidSets
+
 masterHitsFile = '/home/syyeung/vatic/vatic/public/hits_hygiene.php'
 hitsDir = '/home/syyeung/vatic/vatic/public/hits_hygiene';
 wrapperDir = '/home/syyeung/vatic/vatic/public/wrapper'
 
 labelName = "HospitalHygiene"
-vidFps = 10;
-vidLen = vidFps * 20;
+vidFps = 5;
+vidLen = vidFps * 200;
 # vidTypes = {'rgb', 'd', 'fs'}
 vidTypes = {'d'}
 
@@ -31,8 +45,8 @@ if generateHits:
     for video in vidSets:
       indexVid = 0
       frameSetDir = video['dir']
-      frameDate = video['date']
-      vidName = '%s_video_%s_%d_%d' %(labelName, vidType, frameDate, indexVid)
+      frameDate = video['station']
+      vidName = '%s_video_%s_%s_%d' %(labelName, vidType, frameDate, indexVid)
       framesDir = '%s/%s/frame_%s' %(frameRootDir, frameSetDir, vidType)
 
       # upload all videos (i.e. rgb, d, fg)

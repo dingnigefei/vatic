@@ -19,7 +19,7 @@ function preload(queue, onprogress)
         {
             var image = new Image();
             image.onload = function() {
-                
+
                 // force the browser to cache it
                 $("<img src='" + remaining[0] + "'>").appendTo("#preloadpit");
 
@@ -49,12 +49,10 @@ function preload(queue, onprogress)
 function preloadvideo(start, stop, generator, onprogress)
 {
     var queue = new Array();
-    for (var i = 0; i <= (stop - start)*3; i += 3)
+    for (var i = 0; i <= stop - start; i += 1)
     {
-        var url_rgb = generator(start+i/3);
+        var url_rgb = generator(start+i);
         queue[i] = url_rgb;
-        queue[i+1] = url_rgb.replace("rgb", "fs");
-        queue[i+2] = url_rgb.replace("rgb", "d");
     }
     preload(queue, onprogress);
 }

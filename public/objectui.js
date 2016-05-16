@@ -35,27 +35,32 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks, kbDis
             data: {video_load: load},
             success: function(response) {
                 var message = JSON.parse(response);
-                var names = message["label_name"].split(",");;
-                var labels = message["labels"].split("],[").join("]#[").split("#");
-                labels = JSON.parse(labels);
+                var names = message["label_name"].split(",");
+                var labels = JSON.parse(message["labels"]);
+
+                console.log("object name");
+                console.log(names);
+                console.log("object labels");
+                console.log(labels);
 
                 if (names.length === 1 && names[0] === "")
                     return;
 
+                console.assert(names.length == labels.length);
+
                 for (i = 0; i < names.length; i++) {
-                    console.log(names[i]);
-                    console.log(labels[i])
                     var boxes = [];
                     var count = 0;
-                    for (var key in labels[i][1]) {
-                        boxes[count] = labels[i][1][key];
+
+                    for (var key in labels[i][0]) {
+                        boxes[count] = labels[i][0][key];
                         boxes[count].splice(4, 0, parseInt(key));
                         var tmp = boxes[count][5];
                         boxes[count][5] = boxes[count][6]&1;
                         boxes[count][6] = tmp&1;
                         count++;
                     }
-                    me.injectnewobject(names[i], boxes, {});
+                    me.objects[i] = me.injectnewobject(names[i], boxes, {});
                 }
 
                 console.log("data loaded");
@@ -81,8 +86,8 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks, kbDis
         var jobid = this.job.jobid;
 
         console.log('start');
-        console.log(this.tracks.serialize());
-        console.log(names)
+        console.log(JSON.stringify(this.tracks.serialize()));
+        console.log(JSON.stringify(names));
         console.log('end');
         var data = {
             label: this.tracks.serialize(),
@@ -109,6 +114,7 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks, kbDis
 
     this.removeTrackObject = function(id) {
         console.log("remove object "+id);
+
         for (i = id+1; i < this.counter; i++) {
             this.objects[i].id--;
             $("#trackobjectheader"+i).attr("id", "trackobjectheader"+(i-1));
@@ -816,11 +822,14 @@ function TrackObject(job, player, container, color, trackObjectUI)
             me.tooltip.css("-moz-background-size", bgsize);
             annotation++;
 
+            console.log("showtooltip1: " + anno.xbr + "," + anno.xtl + "," + anno.ybr + "," + anno.ytl);
+            console.log("showtooltip2: " + by + "," + bx + "," + (bw-1) + "," + (bh-1));
+
             boundingbox.css({
                 top: by + "px",
                 left: bx + "px",
-                width: (bw-4) + "px",
-                height: (bh-4) + "px",
+                width: (bw-1) + "px",
+                height: (bh-1) + "px",
                 borderColor: me.color[0]
             });
         }

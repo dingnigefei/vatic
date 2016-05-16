@@ -93,6 +93,15 @@ function TrackFrameUI(newfrmbtn, framectr, player, kbDisabled) {
         });
     };
 
+    this.unbind = function(id) {
+        $("#startframe" + id).unbind("click");
+        $("#stopframe" + id).unbind("click");
+        $("#resetframe" + id).unbind("click");
+        $("#deleteframe" + id).unbind("click");
+        $("#labelname-frm" + id).unbind("focusin");
+        $("#labelname-frm" + id).unbind("focusout");
+    };
+
     this.addInterval = function(interval, id) {
         this.intervalsList[id].push(interval);
         this.intervalsList[id] = merge(this.intervalsList[id]);
@@ -197,6 +206,7 @@ function TrackFrameUI(newfrmbtn, framectr, player, kbDisabled) {
         // slider-range, timeline-frm, startframe, endframe, labelname-frm
         console.log("delete " + id);
         $("#bd-frm" + id).remove();
+        this.unbind(id);
 
         for (i = id + 1; i < this.intervalsList.length; i++) {
             $("#slider-range" + i).attr("id", "slider-range" + (i - 1));
@@ -207,8 +217,12 @@ function TrackFrameUI(newfrmbtn, framectr, player, kbDisabled) {
             $("#stopframe" + i).attr("id", "stopframe" + (i - 1));
             $("#resetframe" + i).attr("id", "resetframe" + (i - 1));
             $("#deleteframe" + i).attr("id", "deleteframe" + (i - 1));
+            this.unbind(i - 1);
+            this.setupBtns(i - 1);
         }
 
+        frameStart.splice(id, 1);
+        frameEnd.splice(id, 1);
         this.intervalsList.splice(id, 1);
         this.n--;
         player.removeFrameInfo(id)
@@ -238,6 +252,7 @@ function TrackFrameUI(newfrmbtn, framectr, player, kbDisabled) {
 
         console.log('start');
         console.log(JSON.stringify(labels));
+        console.log(JSON.stringify(names));
         console.log('end');
         var data = {
             label: JSON.stringify(labels),
@@ -280,11 +295,19 @@ function TrackFrameUI(newfrmbtn, framectr, player, kbDisabled) {
             data: {video_load: load},
             success: function(response) {
                 var message = JSON.parse(response);
+
                 names = message["label_name"].split(",");
                 labels = message["labels"].split("],[").join("]#[").split("#");
 
+                console.log("frame name");
+                console.log(names);
+                //console.log("frame labels");
+                //console.log(labels);
+
                 if (names.length === 1 && names[0] === "")
                     return;
+
+                console.assert(names.length == labels.length);
 
                 labels.forEach(function(label, idx) {
                     newfrmbtn.click();

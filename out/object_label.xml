@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<resultset statement="SELECT `video_id`,`label_name`,`labels` FROM `object_label`
+" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <row>
+	<field name="video_id">4521</field>
+	<field name="label_name">Object 1</field>
+	<field name="labels">[[{&quot;0&quot;:[113,54,214,148,false,true],&quot;46&quot;:[113,54,214,148,false,false],&quot;53&quot;:[114,21,215,115,false,false],&quot;75&quot;:[213,149,314,239,false,false],&quot;81&quot;:[153,19,254,109,false,false],&quot;105&quot;:[115,12,216,102,false,false],&quot;123&quot;:[104,66,205,156,false,false],&quot;134&quot;:[70,99,171,189,false,false],&quot;143&quot;:[29,36,130,126,false,false],&quot;183&quot;:[48,10,149,100,false,false],&quot;198&quot;:[197,127,298,217,false,false],&quot;225&quot;:[23,51,124,141,false,false],&quot;249&quot;:[196,125,297,215,false,false],&quot;288&quot;:[186,42,287,132,false,false],&quot;1001&quot;:[153,19,254,109,false,false]},{}]]</field>
+  </row>
+
+  <row>
+	<field name="video_id">4522</field>
+	<field name="label_name"></field>
+	<field name="labels">[]</field>
+  </row>
+</resultset>

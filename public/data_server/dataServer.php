@@ -13,18 +13,22 @@
 
     $video_id = $data['id'];
     $flag = $data['flag'];
-    # $label_name = $data['name'];
     $label_name = implode(',', json_decode(stripslashes($data['name'])));
+    // $label_name = json_decode(stripslashes($data['name']));
 
     if ($flag == 0) {
       $labels = implode(',', json_decode(stripslashes($data['label'])));
-      echo $labels;
+      // $labels = json_decode(stripslashes($data['label']));
+      // for ($i = 0; $i < count($label_name); $i++) {
+      //   $query = "INSERT INTO frame_label (video_id, label_name, labels) VALUES " .
+      //            "('" . $video_id . "','" . $label_name[$i] . "','" . $labels[$i] . "') " .
+      //            "ON DUPLICATE KEY UPDATE label_name=VALUES(label_name), labels=VALUES(labels)";
+      // }
       $query = "INSERT INTO frame_label (video_id, label_name, labels) VALUES " .
                "('" . $video_id . "','" . $label_name . "','" . $labels . "') " .
                "ON DUPLICATE KEY UPDATE label_name=VALUES(label_name), labels=VALUES(labels)";
     } elseif ($flag == 1) {
       $labels = $data['label'];
-      echo $labels;
       $query = "INSERT INTO object_label (video_id, label_name, labels) VALUES " .
                "('" . $video_id . "','" . $label_name . "','" . $labels . "') " .
                "ON DUPLICATE KEY UPDATE label_name=VALUES(label_name), labels=VALUES(labels)";
@@ -49,9 +53,6 @@
     if ($row = mysqli_fetch_array($result)) {
       $json = array('label_name' => $row['label_name'], 'labels' => $row['labels']);
       echo json_encode($json);
-      //echo $row['labels'];
-    } else {
-      echo "Empty";
     }
     exit;
   }

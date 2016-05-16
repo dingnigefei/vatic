@@ -15,7 +15,7 @@
         self.options.overlap = true;
       }
       if (self.options.rangeBarColor == null) {
-        self.options.rangeBarColor = '#F5F5F5';
+        self.options.rangeBarColor = '#83B1D8';
       }
       $(self.options.ranges).each(function(k, v) {
         v = self._parseRangeValues(v);

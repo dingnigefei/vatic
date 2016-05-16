@@ -31,7 +31,7 @@
       function updateVideoStatus() {
         // var info = document.getElementById('info');
         // var offset = info.innerHTML.split(' ').slice(-1)[0];
-        var offset = 4453;
+        var offset = 4536;
         console.log(offset);
         var video_ids = video_ids_raw.map( function (value) {
           var newVal = parseInt(value) - parseInt(offset);
@@ -76,7 +76,7 @@
       <!-- <p id='info'>Completed Videos: <br> <?php foreach($video_id as $id) { echo "$id <br>"; } ?>Offset: {{ offset }}</p> -->
       <table align='center' id='table'>
         {% for video in vidSets -%}
-          {% set date = video['date'] -%}
+          {% set station = video['station'] -%}
           {% set names = video['names'] -%}
           {% set ids = video['ids'] -%}
           {% set hits = video['hits'] -%}
@@ -84,15 +84,7 @@
           {% for name in names -%}
             {% if (loop.index-1) % 10 == 0 %}
               <tr>
-                {% if date == 17 -%}
-                  <th>Oct 17th:</th>
-                {% elif date == 18 -%}
-                  <th>Oct 18th:</th>
-                {% elif date == 19 -%}
-                  <th>Oct 19th:</th>
-                {% else -%}
-                  <th>Oct 20th:</th>
-                {% endif -%}
+                  <th>Station {{ station }}:</th>
             {% endif -%}
             {% set id = '%d' % ids[loop.index-1] -%}
             {% set url = '%s' % hits[loop.index-1] -%}

@@ -202,6 +202,7 @@ code
 #curframe, #timer
 {
     display: table-cell;
+    padding-right: 20px
 }
 
 #playbutton

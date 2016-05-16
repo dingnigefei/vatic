@@ -1,0 +1,17 @@
+_HiStOrY_V2_
+show\040databases;
+use\040vatic;
+show\040tables;
+select\040*\040from\040frame_label;
+select\040*\040from\040object_label;
+delete\040from\040obejct_label;
+delete\040from\040object_label;
+delete\040from\040frame_label;
+use\040vatic;
+show\040tables;
+select\040*\040from\040frame_label;
+select\040*\040from\040object_label;
+select\040*\040from\040frame_label;
+show\040tables;
+select\040*\040from\040vatic_users
+;

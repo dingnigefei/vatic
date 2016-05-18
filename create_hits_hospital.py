@@ -4,15 +4,9 @@ import sys
 import glob
 from jinja2 import Environment, FileSystemLoader
 
-# frameRootDir = '/scail/data/group/vision/u/syyeung/hospital/data'
 frameRootDir = '/scail/data/group/vision/u/syyeung/hospital/data/children_hospital'
 stations = [s for s in os.listdir(frameRootDir) if s.find('0') != -1]
 stations.sort()
-
-# vidSets = [{'date': 17, 'dir': 'cvpr10-17-15afternoon', 'hits': [], 'ids': [], 'names': []}, \
-#            {'date': 18, 'dir': 'cvpr10-18-15morning', 'hits': [], 'ids': [], 'names': []}, \
-#            {'date': 19, 'dir': 'cvpr10-19-15morning', 'hits': [], 'ids': [], 'names': []}, \
-#            {'date': 20, 'dir': 'cvpr10-20-15morning', 'hits': [], 'ids': [], 'names': []}]
 
 vidSets = []
 for s in stations:

@@ -1,7 +1,7 @@
 signature   = "" # AWS secret access key
 accesskey   = "" # AWS access key ID
 sandbox     = False # if true, put on workersandbox.mturk.com
-localhost   = "http://navi.stanford.edu/" # your local host
+localhost   = "http://10.234.26.35/" # your local host
 database    = "mysql://root@localhost/vatic" # server://user:pass@localhost/dbname
 geolocation = "" # api key for ipinfodb.com
 maxobjects = 25;

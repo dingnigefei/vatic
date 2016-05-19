@@ -77,16 +77,14 @@
       <table align='center' id='table'>
         {% for video in vidSets -%}
           {% set station = video['station'] -%}
-          {% set names = video['names'] -%}
           {% set ids = video['ids'] -%}
           {% set hits = video['hits'] -%}
           {% set threshold = 10 -%}
-          {% for name in names -%}
+          {% for id in ids -%}
             {% if (loop.index-1) % 10 == 0 %}
               <tr>
                   <th>Station {{ station }}:</th>
             {% endif -%}
-            {% set id = '%d' % ids[loop.index-1] -%}
             {% set url = '%s' % hits[loop.index-1] -%}
             <td><a id='{{ id }}' href='{{ url }}'>video {{ id }} </a></td>
           {% endfor -%}

@@ -1,6 +1,6 @@
-<?php 
+<?php
   session_start();
- 
+
   $server = "localhost";
   $user_name = "root";
   $password = "";
@@ -14,11 +14,11 @@
   while ($row = mysqli_fetch_array($result)) {
     if ($_POST["loginName"] == $row["user_name"] && $_POST["loginPassword"] == $row["user_password"]) {
       $_SESSION["username"] = $_POST["loginName"];
-      header("Location: http://navi.stanford.edu/hits_hygiene.php");
+      header("Location: http://10.234.26.35/hits_hygiene.php");
       exit;
     }
   }
- 
+
 ?>
 
 <!DOCTYPE html>
@@ -30,8 +30,6 @@
   </head>
   <body>
     <p>Invalid Username or Password!</p><br>
-    <a href='http://navi.stanford.edu/login/login.html'>Go back to Login Page</a>
+    <a href='http://10.234.26.35/login/login.html'>Go back to Login Page</a>
   </body>
 </html>
-
-

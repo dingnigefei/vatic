@@ -23,7 +23,7 @@
       echo "<body><div class='main'>";
       echo "<h2>Error:</h2>";
       echo "<p>Another user is annotating this video right now!</p><br>";
-      echo "<a href='http://navi.stanford.edu/wrapper/HospitalHygiene_wrapper.html'>Go back to previous page</a>";
+      echo "<a href='http://10.234.26.35/wrapper/HospitalHygiene_wrapper.php'>Go back to previous page</a>";
       echo "</div></body></html>";
       exit;
     } else {

@@ -30,7 +30,7 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks, kbDis
 
         $.ajax({
             type: "POST",
-            url: "http://navi.stanford.edu/data_server/dataServer.php",
+            url: "http://10.234.26.35/data_server/dataServer.php",
             async: true,
             data: {video_load: load},
             success: function(response) {
@@ -98,7 +98,7 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks, kbDis
 
         $.ajax({
             type: "POST",
-            url: "http://navi.stanford.edu/data_server/dataServer.php",
+            url: "http://10.234.26.35/data_server/dataServer.php",
             async: true,
             data: {video_data: data},
             success: function(data) {

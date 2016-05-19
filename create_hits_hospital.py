@@ -4,8 +4,9 @@ import sys
 import glob
 from jinja2 import Environment, FileSystemLoader
 
-frameRootDir = '/scail/data/group/vision/u/syyeung/hospital/data/children_hospital'
-stations = [s for s in os.listdir(frameRootDir) if s.find('0') != -1]
+frameRootDir = '/home/cvpr_data/'
+stations = [s for s in os.listdir(frameRootDir) if s.find('10') != -1 and \
+            os.path.isdir(frameRootDir+s+'/frame_d')]
 stations.sort()
 
 vidSets = []
@@ -14,19 +15,18 @@ for s in stations:
 
 print vidSets
 
-masterHitsFile = '/home/syyeung/vatic/vatic/public/hits_hygiene.php'
-hitsDir = '/home/syyeung/vatic/vatic/public/hits_hygiene';
-wrapperDir = '/home/syyeung/vatic/vatic/public/wrapper'
+masterHitsFile = '/home/bpeng/vatic_root/vatic/public/hits_hygiene.php'
+hitsDir = '/home/bpeng/vatic_root/vatic/public/hits_hygiene';
+wrapperDir = '/home/bpeng/vatic_root/vatic/public/wrapper'
 
 labelName = "HospitalHygiene"
 vidFps = 5;
 vidLen = vidFps * 200;
-# vidTypes = {'rgb', 'd', 'fs'}
 vidTypes = {'d'}
 
 generateHits = True;
 
-oldHitsFile = '/home/syyeung/vatic/vatic/old-hits.txt'
+oldHitsFile = '/home/bpeng/vatic_root/vatic/old-hits.txt'
 with open(oldHitsFile) as f:
   oldHits = f.read().strip().split('\n')
 
@@ -58,7 +58,7 @@ if generateHits:
 
       # find video id offset
       if id == 0:
-        url = newHits[0] # e.g url = 'http://navi.stanford.edu/?id=3707&hitId=offline'
+        url = newHits[0]
         offset = url.split('&')[0].split('=')[1]
         print '##############################'
         print offset
@@ -82,6 +82,7 @@ if generateHits:
         f.close()
       indexVid += 1
 
+      video['ids'].sort()
       print video['names']
       print video['ids'] # used as page id later
 
@@ -105,24 +106,6 @@ with open(wrapperFile, 'w') as f:
   html = vidWrapperTemplate.render(context)
   f.write(html)
 
-#write a wrapper html for each video -- NOT USED!
-'''
-wrapperTemplate = env.get_template('/public/wrapper/wrapperTemplate.php')
-for video in vidSets:
-  i = 0
-  names = video['names']
-  ids = video['ids']
-  for hit in video['hits']:
-    name = names[i]
-    id = ids[i]
-    context = {'hit': hit, 'id': id}
-    vidWrapperFile = '%s/%s.php' %(wrapperDir, name)
-    with open(vidWrapperFile, 'w') as f:
-      html = wrapperTemplate.render(context)
-      f.write(html)
-    i += 1
-'''
-
 #regenerate master hits html
 masterHitsTemplate = env.get_template('/public/masterHitsTemplate_hygiene.php')
 
@@ -133,7 +116,6 @@ for labelHitsFile in labelHitsFiles:
   labelName = os.path.splitext(fileName)[0]
   labelNames.append(labelName)
 
-#context = { 'labelNames': labelNames }
 context = {'labelNames': [labelName]}
 
 with open(masterHitsFile, 'w') as f:

@@ -263,7 +263,7 @@ function TrackFrameUI(newfrmbtn, framectr, player, kbDisabled) {
 
         $.ajax({
             type: "POST",
-            url: "http://navi.stanford.edu/data_server/dataServer.php",
+            url: "http://10.234.26.35/data_server/dataServer.php",
             async: true,
             data: {video_data: data},
             success: function(data) {
@@ -290,7 +290,7 @@ function TrackFrameUI(newfrmbtn, framectr, player, kbDisabled) {
 
         $.ajax({
             type: "POST",
-            url: "http://navi.stanford.edu/data_server/dataServer.php",
+            url: "http://10.234.26.35/data_server/dataServer.php",
             async: true,
             data: {video_load: load},
             success: function(response) {

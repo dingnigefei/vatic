@@ -7,3 +7,4 @@ vatic.tar.gz
 *.swp
 public/frames
 *.hits
+*.json

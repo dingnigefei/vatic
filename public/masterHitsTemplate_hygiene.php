@@ -16,7 +16,7 @@
 	<div class='main'>
 		<h2>Available Hits</h2>
 		{% for labelName in labelNames -%}
-		<a href='http://10.234.26.35//wrapper/{{ labelName }}_wrapper.php'>{{ labelName }}</a><br>
+		<a href='http://{{ server }}//wrapper/{{ labelName }}_wrapper.php'>{{ labelName }}</a><br>
 		{% endfor -%}
 	</div>
 </body>

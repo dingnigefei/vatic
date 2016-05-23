@@ -6,6 +6,10 @@
   $password = "";
   $var = '';
 
+  $str = file_get_contents('../../misc/config.json');
+  $json = json_decode($str, true);
+  $server = $json['server'];
+
   $conn = mysqli_connect($server, $user_name, $password) or die ('Failed to Connect '.mysqli_error($conn));
   mysqli_select_db($conn, "vatic") or die ('Failed to Access DB'.mysqli_error($conn));
 
@@ -23,7 +27,7 @@
       echo "<body><div class='main'>";
       echo "<h2>Error:</h2>";
       echo "<p>Another user is annotating this video right now!</p><br>";
-      echo "<a href='http://10.234.26.35/wrapper/HospitalHygiene_wrapper.php'>Go back to previous page</a>";
+      echo "<a href='http://" . $server . "/wrapper/HospitalHygiene_wrapper.php'>Go back to previous page</a>";
       echo "</div></body></html>";
       exit;
     } else {

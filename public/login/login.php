@@ -11,10 +11,14 @@
   $query = "select * from vatic_users";
   $result = mysqli_query($conn, $query) or die ('Failed to query '. mysqli_error($conn));
 
+  $str = file_get_contents('../../misc/config.json');
+  $json = json_decode($str, true);
+  $server = $json['server'];
+
   while ($row = mysqli_fetch_array($result)) {
     if ($_POST["loginName"] == $row["user_name"] && $_POST["loginPassword"] == $row["user_password"]) {
       $_SESSION["username"] = $_POST["loginName"];
-      header("Location: http://10.234.26.35/hits_hygiene.php");
+      header("Location: http://" . $server . "/hits_hygiene.php");
       exit;
     }
   }
@@ -30,6 +34,8 @@
   </head>
   <body>
     <p>Invalid Username or Password!</p><br>
-    <a href='http://10.234.26.35/login/login.html'>Go back to Login Page</a>
+    <?php
+      echo '<a href="http://' . $server . '/login/login.html">Go back to Login Page</a>';
+    ?>
   </body>
 </html>

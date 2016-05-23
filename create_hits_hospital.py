@@ -3,9 +3,14 @@ import os
 import sys
 import glob
 from jinja2 import Environment, FileSystemLoader
+import json
 
-frameRootDir = '/home/cvpr_data/'
-stations = [s for s in os.listdir(frameRootDir) if s.find('10') != -1 and \
+with open('misc/config.json') as f:
+    config = json.load(f)
+print config
+
+frameRootDir = config['data_root']
+stations = [s for s in os.listdir(frameRootDir) if s.find('0') != -1 and \
             os.path.isdir(frameRootDir+s+'/frame_d')]
 stations.sort()
 
@@ -15,9 +20,9 @@ for s in stations:
 
 print vidSets
 
-masterHitsFile = '/home/bpeng/vatic_root/vatic/public/hits_hygiene.php'
-hitsDir = '/home/bpeng/vatic_root/vatic/public/hits_hygiene';
-wrapperDir = '/home/bpeng/vatic_root/vatic/public/wrapper'
+masterHitsFile = config['vatic_root'] + 'vatic/public/hits_hygiene.php'
+hitsDir = config['vatic_root'] + 'vatic/public/hits_hygiene';
+wrapperDir = config['vatic_root'] + 'vatic/public/wrapper'
 
 labelName = "HospitalHygiene"
 vidFps = 5;
@@ -26,7 +31,7 @@ vidTypes = {'d'}
 
 generateHits = True;
 
-oldHitsFile = '/home/bpeng/vatic_root/vatic/old-hits.txt'
+oldHitsFile = config['vatic_root'] + 'vatic/old-hits.txt'
 with open(oldHitsFile) as f:
   oldHits = f.read().strip().split('\n')
 
@@ -116,7 +121,7 @@ for labelHitsFile in labelHitsFiles:
   labelName = os.path.splitext(fileName)[0]
   labelNames.append(labelName)
 
-context = {'labelNames': [labelName]}
+context = {'labelNames': [labelName], 'server': config['server']}
 
 with open(masterHitsFile, 'w') as f:
   html = masterHitsTemplate.render(context)

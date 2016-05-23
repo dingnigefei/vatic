@@ -31,7 +31,7 @@
       function updateVideoStatus() {
         // var info = document.getElementById('info');
         // var offset = info.innerHTML.split(' ').slice(-1)[0];
-        var offset = 4536;
+        var offset = 211;
         console.log(offset);
         var video_ids = video_ids_raw.map( function (value) {
           var newVal = parseInt(value) - parseInt(offset);

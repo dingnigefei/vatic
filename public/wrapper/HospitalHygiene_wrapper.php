@@ -22,7 +22,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Hits</title>
+    <title>Video List | Annotation Tool</title>
     <link rel="stylesheet" type="text/css" href="../css/stylesheet.css">
     <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js'></script>
     <script type="text/javascript">
@@ -70,7 +70,7 @@
   <body onload=updateVideoStatus()>
     <div class='header'>
       <img src='../bg.jpg'>
-      <h1>Healthcare</h1>
+      <h1>Annotation Tool</h1>
     </div>
     <div class='main'>
       <!-- <p id='info'>Completed Videos: <br> <?php foreach($video_id as $id) { echo "$id <br>"; } ?>Offset: 211</p> -->

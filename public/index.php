@@ -6,7 +6,7 @@
 <html>
 <head>
 
-<title>vatic php</title>
+<title>Annotation Tool</title>
 
 <link rel="stylesheet" type="text/css" href="turkic/stylesheet.css">
 <link rel="stylesheet" type="text/css" href="stylesheet.css">

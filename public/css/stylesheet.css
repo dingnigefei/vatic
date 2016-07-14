@@ -29,7 +29,7 @@ body {
 }
 
 .main h2 {
-	color: #8C1515;
+	color: #000;
 }
 
 .main p {
@@ -48,12 +48,12 @@ td, th {
 	border: 1px solid transparent;
 	height: 40px;
         vertical-align: top;
-	color: #8C1515;
+	color: #000;
 }
 
 th {
 	font-weight: bold;
-	color: #8C1515;
+	color: #000;
 	background: #DFDFDF;
 }
 

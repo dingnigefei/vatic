@@ -11,7 +11,7 @@
 <body>
 	<div class='header'>
 		<img src='bg.jpg'>
-		<h1>Healthcare</h1>
+		<h1>Intermountain-Stanford Annotation Tool</h1>
 	</div>
 	<div class='main'>
 		<h2>Available Hits</h2>

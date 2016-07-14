@@ -65,7 +65,7 @@ function loadingscreen(job)
     var ls = $("<div id='loadingscreen'></div>");
     ls.append("<div id='loadingscreeninstructions' class='button'>Show " +
         "Instructions</div>");
-    ls.append("<div id='loadingscreentext'>Downloading the video...</div>");
+    ls.append("<div id='loadingscreentext'>Loading the video...</div>");
     ls.append("<div id='loadingscreenslider'></div>");
 
     if (!mturk_isassigned())
@@ -128,9 +128,8 @@ function brandingscreen()
     console.log("Loading screen");
     var d = $("<div style='margin:0 auto;width:400px;background-color:#fff;padding:20px;'></div>");
     d.append("<h1>Welcome to vatic</h1>");
-    d.append("<p><strong>vatic</strong> is an online, interactive video annotation tool for computer vision research that crowdsources work to Amazon's Mechanical Turk. Our tool makes it easy to build massive, affordable video data sets and can be deployed on a cloud. Written in Python + C + Javascript, vatic is free and open-source software.</p>");
-    d.append("<p><a href='http://mit.edu/vondrick/vatic' target='_blank'>More information &raquo;</a></p>");
-    d.hide();
+    window.location = "./login/login.html";
+d.hide();
     d.appendTo(container);
     d.show("explode", 1000);
 
